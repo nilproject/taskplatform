@@ -1,7 +1,9 @@
 var fw = (function () {
+    "use strict";
+
     var componentsCache = {};
 
-    function defineComponent(selector, templateUri, styleUri, handler) {
+    function defineComponent(selector, templateUri, styleUri, requires, handler) {
         if (!selector)
             throw "invalid selector";
 
@@ -9,19 +11,21 @@ var fw = (function () {
             throw "invalid handler";
 
         if (selector in componentsCache)
-            throw "this selector already allocated";
+            throw "this selector is already allocated";
 
         componentsCache[selector.toLowerCase()] = {
             templateUri: templateUri,
             styleUri: styleUri,
             templateCode: null,
             loaded: false,
-            handler: handler
+            loading: false,
+            handler: handler,
+            requires: requires
         };
     }
 
     function _appendStyle(styleText) {
-        var css = styleText;
+        var css = "\n" + styleText.trim() + "\n";
         var head = document.head || document.getElementsByTagName("head")[0];
         var style = document.createElement("style");
 
@@ -35,23 +39,106 @@ var fw = (function () {
         head.appendChild(style);
     }
 
+    function _appendScript(scriptUri, cb) {
+        var head = document.head || document.getElementsByTagName("head")[0];
+        var script = document.createElement("script");
+
+        script.type = "text/javascript";
+        script.src = scriptUri;
+        script.onload = cb;
+
+        head.appendChild(script);
+    }
+
     function _load(url, callback) {
         $.ajax({
             url: url,
-            complete: callback
+            complete: callback,
+            dataType: "text"
         });
     }
 
-    function bootComponent(element, callback) {
-        var cacheRecord = componentsCache[element.nodeName.toLowerCase()];
+    function prefetchComponent(componentName, callback) {
+        var cacheRecord = componentsCache[componentName];
+        if (!cacheRecord) {
+            callback && callback();
+        }
+
+        function fetch() {
+            if (!cacheRecord.loaded) {
+                for (var dep in cacheRecord.requires) {
+                    if (!(cacheRecord.requires[dep].name in componentsCache)) {
+                        _appendScript(cacheRecord.requires[dep].uri, function () {
+                            if (!(cacheRecord.requires[dep].name in componentsCache))
+                                throw "Invalid dependency: " + element.nodeName.toLowerCase() + " <-- " + cacheRecord.requires[dep].name;
+
+                            fetch();
+                        });
+                        return;
+                    }
+                }
+
+                var loadCallback = function (setValue, result) {
+                    if (result.status == 200)
+                        setValue(result.responseText);
+
+                    fetch();
+                };
+
+                if (cacheRecord.templateUri) {
+                    _load(cacheRecord.templateUri, loadCallback.bind(null, function (v) {
+                        cacheRecord.templateUri = null;
+                        cacheRecord.templateCode = v;
+                    }));
+
+                    return;
+                }
+
+                if (cacheRecord.styleUri) {
+                    _load(cacheRecord.styleUri, loadCallback.bind(null, function (v) {
+                        cacheRecord.styleUri = null;
+                        _appendStyle(v);
+                    }));
+
+                    return;
+                }
+
+                cacheRecord.loaded = true;
+            }
+
+            callback && callback();
+        }
+
+        fetch();
+    }
+
+    function bootComponent(element, params, callback) {
+        var componentName = element.nodeName.toLowerCase();
+        var cacheRecord = componentsCache[componentName];
+        if (!cacheRecord) {
+            process(element);
+            return;
+        }
 
         function process(e) {
             var childIndex = 0;
             var childs = [];
+            var tagedNodes = {};
 
             function doCicle(cb) {
                 if (childIndex < element.childNodes.length) {
-                    bootComponent(element.childNodes[childIndex++], function (elem) {
+                    if (element.childNodes[childIndex].attributes) {
+                        var tag = element.childNodes[childIndex].attributes.getNamedItem("fw-tag");
+                        if (tag) {
+                            if (!(tag.value in tagedNodes))
+                                tagedNodes[tag.value] = [];
+
+                            tagedNodes[tag.value].push(element.childNodes[childIndex]);
+                        }
+                    }
+
+                    bootComponent(element.childNodes[childIndex++], null, function (elem, tags) {
+                        Object.assign(tagedNodes, tags);
                         childs.push(elem);
                         doCicle(cb);
                     });
@@ -64,55 +151,35 @@ var fw = (function () {
                 if (cacheRecord && cacheRecord.templateCode !== null) {
                     element.innerHTML = cacheRecord.templateCode;
                     doCicle(function () {
-                        cacheRecord.handler(element, childs);
-                        callback && callback(element);
+                        cacheRecord.handler(element, childs, tagedNodes, params);
+                        callback && callback(element, tagedNodes);
                     });
                 } else {
-                    callback && callback(element);
+                    callback && callback(element, tagedNodes);
                 }
             });
         }
 
-        if (!cacheRecord) {
+        prefetchComponent(componentName, function () {
             process(element);
-            return;
-        }
-
-        if (!cacheRecord.loaded) {
-            var count = !!cacheRecord.templateUri + !!cacheRecord.styleUri;
-            var loadCallback = function (setValue, result) {
-                if (result.status == 200)
-                    setValue(result.responseText);
-
-                if (--count == 0)
-                    process(element);
-            };
-
-            if (cacheRecord.templateUri) {
-                _load(cacheRecord.templateUri, loadCallback.bind(null, function (v) {
-                    cacheRecord.templateCode = v;
-                }));
-            }
-
-            if (cacheRecord.styleUri) {
-                _load(cacheRecord.styleUri, loadCallback.bind(null, function (v) {
-                    _appendStyle(v);
-                }));
-            }
-        } else {
-            process(element);
-        }
+        });
     }
 
-    function bootstrap(element) {
-        bootComponent(element);
+    function bootstrap(elementName) {
+        bootComponent(document.getElementsByTagName(elementName)[0]);
+    }
+
+    function createElement(elementName, params, callback) {
+        var element = document.createElement(elementName);
+        bootComponent(element, params, callback);
+        return element;
     }
 
     return {
         defineComponent: defineComponent,
         bootstrap: bootstrap,
-        _appendStyle,
-        _load
+        createElement: createElement,
+        prefetchComponent: prefetchComponent
     }
 })();
 

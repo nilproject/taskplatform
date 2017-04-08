@@ -1,3 +1,9 @@
 app {
+    display: block;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85em;
+}
+
+.inline-block {
     display: inline-block;
 }

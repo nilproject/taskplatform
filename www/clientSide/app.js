@@ -4,6 +4,12 @@ fw.defineComponent(
     "app",
     "/clientSide/app.html",
     "/clientSide/app.css",
-    function () {
+    [
+        {
+            name: "task-list",
+            uri: "clientSide/tasklist/tasklist.js"
+        }
+    ],
+    function (element, childs, tagedNodes, params) {
     }
 )

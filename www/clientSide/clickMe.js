@@ -1,7 +1,8 @@
 fw.defineComponent(
     "click-me",
-    "/clientSide/clickMe.html",
-    "/clientSide/clickMe.css",
-    function () {
+    "data:text/html,<button>click me!</button>",
+    "",
+    [],
+    function (element, childs, tagedNodes, params) {
     }
 )

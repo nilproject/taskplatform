@@ -1,43 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="/clientSide/framework/jquery-3.2.0.min.js"></script>
-        <script src="/clientSide/framework/framework.js"></script>
-        <script src="/clientSide/app.js"></script>
-        <script src="/clientSide/clickMe.js"></script>
-        <script>
-            $.ajax({
-                url: "/api/sandbox.php?hello",
-                complete: function (result) { 
-                    if (result.status == 200) {
-                        console.log(result.responseText);
-                    }
-                }
-            });
-
-            function init() {
-                // $("div").html("<h1>hello</h1>");
-                fw.bootstrap(document.getElementsByTagName("app")[0]);
-            }
-        </script>
-        <style>
-            body,
-            html {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-            }
-            
-            body {
-                display: flex;
-            }
-            
-            div {
-                margin: auto;
-            }
-        </style>
-    </head>
-    <body onload="init()">
-        <app></app>
-    </body>
+<head>
+    <script src="/clientSide/framework/jquery-3.2.0.min.js"></script>
+    <script src="/clientSide/framework/framework.js"></script>
+    <script src="/clientSide/app.js"></script>
+    <style>
+        body {
+            margin: 0;
+            background: #edeef0;
+        }
+    </style>
+</head>
+<body onload="fw.bootstrap('app')">
+    <app></app>
+</body>
 </html>
