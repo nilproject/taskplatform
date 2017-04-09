@@ -3,6 +3,8 @@ var fw = (function () {
 
     var componentsCache = {};
 
+    var scriptUriForIE = "";
+
     function defineComponent(selector, templateUri, styleUri, requires, handler) {
         if (!selector)
             throw "invalid selector";
@@ -13,7 +15,7 @@ var fw = (function () {
         if (selector in componentsCache)
             throw "this selector is already allocated";
 
-        var uriRoot = document.currentScript.src.split("/").slice(0, -1).join("/") + "/";
+        var uriRoot = document.currentScript.src.split("/").slice(0, -1).join("/") + "/"
 
         componentsCache[selector.toLowerCase()] = {
             templateUri: templateUri.startsWith(".") ? uriRoot + templateUri : templateUri,
@@ -22,7 +24,8 @@ var fw = (function () {
             loaded: false,
             loading: false,
             handler: handler,
-            requires: requires
+            requires: requires,
+            uriRoot: uriRoot
         };
     }
 
@@ -49,6 +52,8 @@ var fw = (function () {
         script.src = scriptUri;
         script.onload = cb;
 
+        scriptUriForIE = scriptUri;
+
         head.appendChild(script);
     }
 
@@ -70,7 +75,11 @@ var fw = (function () {
             if (!cacheRecord.loaded) {
                 for (var dep in cacheRecord.requires) {
                     if (!(cacheRecord.requires[dep].name in componentsCache)) {
-                        _appendScript(cacheRecord.requires[dep].uri, function () {
+                        var uri = cacheRecord.requires[dep].uri;
+                        if (uri.startsWith("."))
+                            uri = cacheRecord.uriRoot + uri;
+
+                        _appendScript(uri, function () {
                             if (!(cacheRecord.requires[dep].name in componentsCache))
                                 throw "Invalid dependency: " + element.nodeName.toLowerCase() + " <-- " + cacheRecord.requires[dep].name;
 
@@ -81,10 +90,12 @@ var fw = (function () {
                 }
 
                 var loadCallback = function (setValue, result) {
-                    if (result.status == 200)
+                    if (result.status == 200) {
                         setValue(result.responseText);
-
-                    fetch();
+                        fetch();
+                    } else {
+                        cacheRecord.loaded = true;
+                    }
                 };
 
                 if (cacheRecord.templateUri) {
@@ -150,8 +161,8 @@ var fw = (function () {
             }
 
             doCicle(function () {
-                if (cacheRecord && cacheRecord.templateCode !== null) {
-                    element.innerHTML = cacheRecord.templateCode;
+                if (cacheRecord) {
+                    element.innerHTML = cacheRecord.templateCode || "";
                     doCicle(function () {
                         cacheRecord.handler(app, element, childs, tagedNodes, params);
                         callback && callback(element);
@@ -167,8 +178,12 @@ var fw = (function () {
         });
     }
 
+    var _propogateUri;
+
     function bootstrap(elementName, app) {
-        bootComponent(app || {}, document.getElementsByTagName(elementName)[0]);
+        bootComponent(app || {}, document.getElementsByTagName(elementName)[0], {}, function () {
+            _propogateUri();
+        });
     }
 
     function createElement(app, elementName, params, callback) {
@@ -177,12 +192,115 @@ var fw = (function () {
         return element;
     }
 
+    var navigation = (function () {
+        var listeners = [];
+        _propogateUri = function () {
+            var listenersTemp = listeners.slice();
+            for (var l in listenersTemp) {
+                listenersTemp[l](window.location.pathname);
+            }
+        };
+
+        window.addEventListener("popstate", _propogateUri);
+
+        return {
+            subscribe: function (handler) {
+                if (typeof handler !== "function")
+                    throw new TypeError("Invalid argument type");
+
+                if (listeners.indexOf(handler) === -1) {
+                    listeners.push(handler);
+                }
+            },
+            unsubscribe: function (handler) {
+                if (typeof handler !== "function")
+                    throw new TypeError("Invalid argument type");
+
+                var index = listeners.indexOf(handler);
+                if (index !== -1) {
+                    listeners.splice(index, 1);
+                }
+            },
+            navigate: function (uri, title) {
+                window.history.pushState(title, title, uri);
+                _propogateUri();
+            },
+            get currentUri() {
+                return window.location.pathname;
+            }
+        };
+    })();
+
     return {
         defineComponent: defineComponent,
         bootstrap: bootstrap,
         createElement: createElement,
-        prefetchComponent: prefetchComponent
+        prefetchComponent: prefetchComponent,
+        navigation: navigation
     }
 })();
+
+fw.defineComponent(
+    "router-outlet-rule",
+    "",
+    "",
+    [],
+    function () { });
+
+fw.defineComponent(
+    "router-outlet",
+    "",
+    "data:text/css,router-outlet { display: block; width: 100%; height: 100%; }",
+    [],
+    function (app, element, rules) {
+        var routes = {};
+
+        for (var rule in rules) {
+            if (rules[rule].attributes) {
+                var uriKV = rules[rule].attributes.getNamedItem("uri");
+                var componentKV = rules[rule].attributes.getNamedItem("component");
+                var paramsKV = rules[rule].attributes.getNamedItem("params");
+
+                if (uriKV && componentKV) {
+                    routes[uriKV.value] = {
+                        component: componentKV.value,
+                        params: paramsKV.value
+                    };
+                }
+            }
+        }
+
+        function navHandler(uri) {
+            var isConnected = true;
+            if ("isConnected" in element) {
+                isConnected = element.isConnected;
+            } else {
+                var parent = element.parentNode;
+                while (parent && parent != document) {
+                    parent = parent.parentNode;
+                }
+
+                isConnected = !!parent;
+            }
+
+            if (!isConnected) {
+                fw.navigation.unsubscribe(navHandler);
+                return;
+            }
+
+            if (!routes[uri]) {
+                element.removeChild(element.childNodes[0]);
+                return;
+            }
+
+            fw.prefetchComponent(routes[uri].component, function () {
+                var child = fw.createElement(app, routes[uri].component, JSON.parse(routes[uri].params));
+                element.innerHTML = "";
+                element.appendChild(child);
+            });
+        }
+
+        fw.navigation.subscribe(navHandler);
+    });
 
 // export default fw;

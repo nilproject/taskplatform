@@ -1,2 +1,26 @@
-﻿body {
+﻿app-header {
+    display: block;
+    background: white;
+    height: 34px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-shadow: 0 0 0 1px #e3e4e8;
 }
+
+    app-header .nav {
+        margin: auto;
+        width: 600px;
+        text-align: center;
+        border-collapse: collapse;
+        height: 100%;
+    }
+
+    app-header .nav-item {
+        cursor: pointer;
+    }
+
+        app-header .nav-item:hover {
+            background: #f0f2f5;
+            border-bottom: 1px solid;
+        }

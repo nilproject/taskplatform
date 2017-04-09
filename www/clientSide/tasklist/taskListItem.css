@@ -25,6 +25,7 @@
     }
 
     task-list-item .text {
+        white-space: normal;
         white-space: initial;
     }
 
@@ -43,8 +44,14 @@
     }
 
         task-list-item .footer button {
+            background: #ddd;
             border: none;
             color: #000;
             height: 1.67em;
             border-radius: 2px;
+            padding: 0 7px 0;
         }
+
+            task-list-item .footer button:active {
+                padding: 2px 7px 0
+            }

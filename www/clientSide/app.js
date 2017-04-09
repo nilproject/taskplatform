@@ -7,13 +7,18 @@ fw.defineComponent(
     [
         {
             name: "task-list",
-            uri: "clientSide/tasklist/tasklist.js"
+            uri: "./tasklist/tasklist.js"
         },
         {
             name: "app-header",
-            uri: "clientSide/appheader/appheader.js"
+            uri: "./appheader/appheader.js"
         }
     ],
     function (app, element, childs, tagedNodes, params) {
     }
 );
+
+function App() {
+    if (!(this instanceof App))
+        throw new TypeError("Invalid constructor call");
+}

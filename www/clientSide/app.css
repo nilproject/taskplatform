@@ -4,6 +4,13 @@ app {
     font-size: 0.85em;
 }
 
+app > router-outlet {
+    width: 600px;
+    margin: 34px auto 0;
+}
+
 .inline-block {
     display: inline-block;
 }
+
+

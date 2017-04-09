@@ -1,5 +1,8 @@
 ﻿task-list {
     display: block;
-    width: 600px;
-    margin: auto;
 }
+
+    task-list > div {
+        padding-top: 1px;
+        margin-top: -1px;
+    }

@@ -2,6 +2,7 @@
 <html>
 <head>
     <script src="clientSide/framework/jquery-3.2.0.min.js"></script>
+    <script src="clientSide/framework/polyfills.js"></script>
     <script src="clientSide/framework/framework.js"></script>
     <script src="clientSide/app.js"></script>
     <style>
@@ -11,7 +12,7 @@
         }
     </style>
 </head>
-<body onload="fw.bootstrap('app')">
+<body onload="fw.bootstrap('app', new App())">
     <app></app>
 </body>
 </html>
