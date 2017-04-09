@@ -3,8 +3,6 @@ var fw = (function () {
 
     var componentsCache = {};
 
-    var scriptUriForIE = "";
-
     function defineComponent(selector, templateUri, styleUri, requires, handler) {
         if (!selector)
             throw "invalid selector";
@@ -18,8 +16,8 @@ var fw = (function () {
         var uriRoot = document.currentScript.src.split("/").slice(0, -1).join("/") + "/"
 
         componentsCache[selector.toLowerCase()] = {
-            templateUri: templateUri.startsWith(".") ? uriRoot + templateUri : templateUri,
-            styleUri: styleUri.startsWith(".") ? uriRoot + styleUri : styleUri,
+            templateUri: templateUri.startsWith("./") ? uriRoot + templateUri.substr(2) : templateUri,
+            styleUri: styleUri.startsWith("./") ? uriRoot + styleUri.substr(2) : styleUri,
             templateCode: null,
             loaded: false,
             loading: false,
@@ -52,14 +50,26 @@ var fw = (function () {
         script.src = scriptUri;
         script.onload = cb;
 
-        scriptUriForIE = scriptUri;
-
         head.appendChild(script);
     }
 
-    function _load(url, callback) {
+    function _load(uri, callback) {
+        if (uri.startsWith("data:")) {
+            var commaIndex = uri.indexOf(",");
+            if (commaIndex === -1){
+                uri = "";
+            } else {
+                uri = uri.substr(commaIndex + 1);
+            }
+
+            callback({
+                responseText: uri,
+                status: 200
+            });
+        }
+
         $.ajax({
-            url: url,
+            url: uri,
             complete: callback,
             dataType: "text"
         });
@@ -76,8 +86,8 @@ var fw = (function () {
                 for (var dep in cacheRecord.requires) {
                     if (!(cacheRecord.requires[dep].name in componentsCache)) {
                         var uri = cacheRecord.requires[dep].uri;
-                        if (uri.startsWith("."))
-                            uri = cacheRecord.uriRoot + uri;
+                        if (uri.startsWith("./"))
+                            uri = cacheRecord.uriRoot + uri.substr(2);
 
                         _appendScript(uri, function () {
                             if (!(cacheRecord.requires[dep].name in componentsCache))
