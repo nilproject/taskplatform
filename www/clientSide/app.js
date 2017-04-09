@@ -2,14 +2,18 @@
 
 fw.defineComponent(
     "app",
-    "/clientSide/app.html",
-    "/clientSide/app.css",
+    "./app.html",
+    "./app.css",
     [
         {
             name: "task-list",
             uri: "clientSide/tasklist/tasklist.js"
+        },
+        {
+            name: "app-header",
+            uri: "clientSide/appheader/appheader.js"
         }
     ],
-    function (element, childs, tagedNodes, params) {
+    function (app, element, childs, tagedNodes, params) {
     }
-)
+);

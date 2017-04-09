@@ -13,9 +13,11 @@ var fw = (function () {
         if (selector in componentsCache)
             throw "this selector is already allocated";
 
+        var uriRoot = document.currentScript.src.split("/").slice(0, -1).join("/") + "/";
+
         componentsCache[selector.toLowerCase()] = {
-            templateUri: templateUri,
-            styleUri: styleUri,
+            templateUri: templateUri.startsWith(".") ? uriRoot + templateUri : templateUri,
+            styleUri: styleUri.startsWith(".") ? uriRoot + styleUri : styleUri,
             templateCode: null,
             loaded: false,
             loading: false,
@@ -112,7 +114,7 @@ var fw = (function () {
         fetch();
     }
 
-    function bootComponent(element, params, callback) {
+    function bootComponent(app, element, params, callback) {
         var componentName = element.nodeName.toLowerCase();
         var cacheRecord = componentsCache[componentName];
         if (!cacheRecord) {
@@ -137,7 +139,7 @@ var fw = (function () {
                         }
                     }
 
-                    bootComponent(element.childNodes[childIndex++], null, function (elem, tags) {
+                    bootComponent(app, element.childNodes[childIndex++], null, function (elem, tags) {
                         Object.assign(tagedNodes, tags);
                         childs.push(elem);
                         doCicle(cb);
@@ -151,8 +153,8 @@ var fw = (function () {
                 if (cacheRecord && cacheRecord.templateCode !== null) {
                     element.innerHTML = cacheRecord.templateCode;
                     doCicle(function () {
-                        cacheRecord.handler(element, childs, tagedNodes, params);
-                        callback && callback(element, tagedNodes);
+                        cacheRecord.handler(app, element, childs, tagedNodes, params);
+                        callback && callback(element);
                     });
                 } else {
                     callback && callback(element, tagedNodes);
@@ -165,13 +167,13 @@ var fw = (function () {
         });
     }
 
-    function bootstrap(elementName) {
-        bootComponent(document.getElementsByTagName(elementName)[0]);
+    function bootstrap(elementName, app) {
+        bootComponent(app || {}, document.getElementsByTagName(elementName)[0]);
     }
 
-    function createElement(elementName, params, callback) {
+    function createElement(app, elementName, params, callback) {
         var element = document.createElement(elementName);
-        bootComponent(element, params, callback);
+        bootComponent(app, element, params, callback ? function (e) { callback(e); } : undefined);
         return element;
     }
 
