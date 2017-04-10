@@ -56,7 +56,7 @@ var fw = (function () {
     function _load(uri, callback) {
         if (uri.startsWith("data:")) {
             var commaIndex = uri.indexOf(",");
-            if (commaIndex === -1){
+            if (commaIndex === -1) {
                 uri = "";
             } else {
                 uri = uri.substr(commaIndex + 1);
@@ -249,11 +249,20 @@ var fw = (function () {
 })();
 
 fw.defineComponent(
-    "router-outlet-rule",
+    "router-outlet-route",
     "",
-    "",
+    "data:text/css,router-outlet-route { display: none; }",
     [],
-    function () { });
+    function (app, element, childs) { element._childs = childs; });
+fw.prefetchComponent("router-outlet-route");
+
+fw.defineComponent(
+    "router-outlet-route-default",
+    "",
+    "data:text/css,router-outlet-route-default { display: none; }",
+    [],
+    function (app, element, childs) { element._childs = childs; });
+fw.prefetchComponent("router-outlet-route-default");
 
 fw.defineComponent(
     "router-outlet",
@@ -265,15 +274,28 @@ fw.defineComponent(
 
         for (var rule in rules) {
             if (rules[rule].attributes) {
-                var uriKV = rules[rule].attributes.getNamedItem("uri");
                 var componentKV = rules[rule].attributes.getNamedItem("component");
                 var paramsKV = rules[rule].attributes.getNamedItem("params");
 
-                if (uriKV && componentKV) {
-                    routes[uriKV.value] = {
-                        component: componentKV.value,
-                        params: paramsKV.value
-                    };
+                var uriKV;
+                if (rules[rule].nodeName.toLowerCase() == "router-outlet-route-default") {
+                    uriKV = { value: "" };
+                } else {
+                    uriKV = rules[rule].attributes.getNamedItem("uri");
+                }
+
+                if (uriKV) {
+                    if (componentKV) {
+                        routes[uriKV.value] = {
+                            component: componentKV.value,
+                            params: paramsKV && paramsKV.value
+                        };
+                    } else {
+                        routes[uriKV.value] = {
+                            content: rules[rule]._childs,
+                            params: paramsKV && paramsKV.value
+                        };
+                    }
                 }
             }
         }
@@ -297,19 +319,30 @@ fw.defineComponent(
             }
 
             if (!routes[uri]) {
-                element.removeChild(element.childNodes[0]);
-                return;
+                if (routes[""]) {
+                    uri = "";
+                } else {
+                    element.removeChild(element.childNodes[0]);
+                    return;
+                }
             }
 
-            fw.prefetchComponent(routes[uri].component, function () {
-                var child = fw.createElement(app, routes[uri].component, JSON.parse(routes[uri].params));
+            if (routes[uri].component) {
+                fw.prefetchComponent(routes[uri].component, function () {
+                    var child = fw.createElement(app, routes[uri].component, JSON.parse(routes[uri].params));
+                    element.innerHTML = "";
+                    element.appendChild(child);
+                });
+            } else {
                 element.innerHTML = "";
-                element.appendChild(child);
-            });
+                if (routes[uri].content) {
+                    for (var i = 0, len = routes[uri].content.length; i < len; i++) {
+                        element.appendChild(routes[uri].content[i]);
+                    }
+                }
+            }
         }
 
         fw.navigation.subscribe(navHandler);
         navHandler(window.location.pathname);
     });
-
-// export default fw;

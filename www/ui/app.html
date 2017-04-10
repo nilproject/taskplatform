@@ -1,11 +1,14 @@
-<header>
+﻿<header>
     <app-header></app-header>
 </header>
 
 <main>
     <router-outlet class="content-width">
-        <router-outlet-rule uri="/tasks" component="task-list" params='{ "tasksType": "opened" }'></router-outlet-rule>
-        <router-outlet-rule uri="/completedtasks" component="task-list" params='{ "tasksType": "completed" }'></router-outlet-rule>
-        <router-outlet-rule uri="/createdtasks" component="task-list" params='{ "tasksType": "created" }'></router-outlet-rule>
+        <router-outlet-route uri="/tasks" component="task-list" params='{ "tasksType": "opened" }'></router-outlet-route>
+        <router-outlet-route uri="/completedtasks" component="task-list" params='{ "tasksType": "completed" }'></router-outlet-route>
+        <router-outlet-route uri="/createdtasks" component="task-list" params='{ "tasksType": "created" }'></router-outlet-route>
+        <router-outlet-route-default>
+            Здесь ничего нет ¯\_(ツ)_/¯
+        </router-outlet-route-default>
     </router-outlet>
 </main>
