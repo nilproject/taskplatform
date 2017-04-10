@@ -66,6 +66,8 @@ var fw = (function () {
                 responseText: uri,
                 status: 200
             });
+
+            return;
         }
 
         $.ajax({
@@ -91,7 +93,7 @@ var fw = (function () {
 
                         _appendScript(uri, function () {
                             if (!(cacheRecord.requires[dep].name in componentsCache))
-                                throw "Invalid dependency: " + element.nodeName.toLowerCase() + " <-- " + cacheRecord.requires[dep].name;
+                                throw "Invalid dependency: " + componentName + " <-- " + cacheRecord.requires[dep].name;
 
                             fetch();
                         });
@@ -188,12 +190,8 @@ var fw = (function () {
         });
     }
 
-    var _propogateUri;
-
     function bootstrap(elementName, app) {
-        bootComponent(app || {}, document.getElementsByTagName(elementName)[0], {}, function () {
-            _propogateUri();
-        });
+        bootComponent(app || {}, document.getElementsByTagName(elementName)[0]);
     }
 
     function createElement(app, elementName, params, callback) {
@@ -204,14 +202,14 @@ var fw = (function () {
 
     var navigation = (function () {
         var listeners = [];
-        _propogateUri = function () {
+        function propogateUri() {
             var listenersTemp = listeners.slice();
             for (var l in listenersTemp) {
                 listenersTemp[l](window.location.pathname);
             }
         };
 
-        window.addEventListener("popstate", _propogateUri);
+        window.addEventListener("popstate", propogateUri);
 
         return {
             subscribe: function (handler) {
@@ -233,7 +231,7 @@ var fw = (function () {
             },
             navigate: function (uri, title) {
                 window.history.pushState(title, title, uri);
-                _propogateUri();
+                propogateUri();
             },
             get currentUri() {
                 return window.location.pathname;
@@ -311,6 +309,7 @@ fw.defineComponent(
         }
 
         fw.navigation.subscribe(navHandler);
+        navHandler(window.location.pathname);
     });
 
 // export default fw;

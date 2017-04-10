@@ -1,0 +1,22 @@
+app {
+    display: block;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85em;
+}
+
+app main {
+    width: 100%;
+    margin-top: 34px;
+}
+
+app router-outlet {
+    margin: 0 auto;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.content-width {
+    width: 600px;
+}

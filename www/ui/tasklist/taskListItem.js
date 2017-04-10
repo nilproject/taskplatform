@@ -7,5 +7,6 @@
         tagedNodes.text[0].innerText = params.text;
         tagedNodes.name[0].innerText = "Big Boss";
         tagedNodes.time[0].innerText = Date();
+        tagedNodes.avatar[0].src = app.user.avatarUri;
     }
 )

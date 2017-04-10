@@ -1,0 +1,36 @@
+﻿<div class="user-layer content-width">
+    <div class="user-block inline">
+        <img class="inline avatar" fw-tag="avatar" />
+        <div class="inline name" fw-tag="name"></div>
+        <div class="user-menu">
+            <ul>
+                <li class="user-info">
+                    Счёт: <span fw-tag="money">XXX</span>
+                    <br />
+                    Открытых<br />задач: <span fw-tag="openTasks">YYY</span>
+                </li>
+                <li onclick="window.location.href='/logout'">
+                    Выйти
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="nav-layer content-width">
+    <table class="nav">
+        <tbody>
+            <tr>
+                <td class="nav-item" fw-tag="opened">
+                    Открытые
+                </td>
+                <td class="nav-item" fw-tag="completed">
+                    Выполненные
+                </td>
+                <td class="nav-item" fw-tag="created">
+                    Созданные
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

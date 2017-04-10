@@ -1,0 +1,113 @@
+﻿app-header {
+    display: block;
+    background: white;
+    height: 34px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-shadow: 0 0 0 1px #e3e4e8;
+}
+
+    app-header div {
+        height: 100%;
+    }
+
+    app-header .nav-layer {
+        margin: auto;
+    }
+
+    app-header .nav {
+        text-align: center;
+        border-collapse: collapse;
+        width: 100%;
+        height: 100%;
+    }
+
+    app-header .nav-item {
+        cursor: pointer;
+        border-bottom: 1px solid transparent;
+    }
+
+        app-header .nav-item:hover {
+            background: #f0f2f5;
+            border-bottom: 1px solid #777;
+        }
+
+    app-header .user-layer {
+        position: absolute;
+        right: 50%;
+        text-align: right;
+        z-index: -1;
+        cursor: pointer;
+    }
+
+    app-header .user-block {
+        width: 137px;
+        margin-right: 50%;
+        text-align: initial;
+        white-space: nowrap;
+        line-height: 34px;
+    }
+
+    app-header .avatar {
+        height: 34px;
+        width: 34px;
+        border-radius: 50%;
+        vertical-align: top;
+    }
+
+    app-header .user-menu {
+        width: 137px;
+        height: auto;
+        margin-right: 50%;
+        overflow: hidden;
+        visibility: collapse;
+        transition: visibility linear 200ms 200ms;
+    }
+
+    app-header .user-block:hover .user-menu {
+        visibility: visible;
+    }
+
+    app-header .user-info {
+        width: 100%;
+        height: 60px;
+        line-height: 1.5em;
+        font-size: 0.9em;
+        color: #888;
+    }
+
+        app-header .user-info span {
+            color: black;
+        }
+
+    app-header .user-menu ul {
+        list-style-type: none;
+        background: white;
+        margin: 0 5px 0;
+        padding: 0;
+        transform: translateY(-100%);
+        box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+        transition: transform ease-in-out 200ms;
+    }
+
+    app-header .user-menu li {
+        padding-left: 16px;
+    }
+
+    app-header .user-block:hover .user-menu ul {
+        transform: none;
+        visibility: visible;
+    }
+
+    app-header .user-menu li:first-child {
+        border-bottom: 1px solid #ddd;
+    }
+
+    app-header .user-menu li:last-child {
+        height: 37px;
+    }
+
+        app-header .user-menu li:last-child:hover {
+            background: #f0f2f5;
+        }
