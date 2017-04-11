@@ -16,7 +16,8 @@
     }
 
         task-list-item .avatar img {
-            width: 68px;
+            width: 34px;
+            height: 34px;
         }
 
     task-list-item .time {
@@ -41,17 +42,4 @@
     task-list-item .footer {
         text-align: right;
         margin-top: 10px;
-    }
-
-        task-list-item .footer button {
-            background: #ddd;
-            border: none;
-            color: #000;
-            height: 1.67em;
-            border-radius: 2px;
-            padding: 0 7px 0;
-        }
-
-            task-list-item .footer button:active {
-                padding: 2px 7px 0
-            }
+    }        

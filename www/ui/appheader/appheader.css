@@ -13,7 +13,14 @@
     }
 
     app-header .nav-layer {
-        margin: auto;
+        margin: 0 auto;
+    }
+
+    app-header .layer {
+        position: absolute;
+        top: 0;
+        line-height: 34px;
+        height: 0;
     }
 
     app-header .nav {
@@ -34,32 +41,25 @@
         }
 
     app-header .user-layer {
-        position: absolute;
         right: 50%;
         text-align: right;
-        z-index: -1;
-        cursor: pointer;
     }
 
     app-header .user-block {
         width: 137px;
-        margin-right: 50%;
-        text-align: initial;
+        text-align: left;
         white-space: nowrap;
-        line-height: 34px;
+        margin-right: 50%;
+        cursor: pointer;
     }
 
     app-header .avatar {
-        height: 34px;
-        width: 34px;
-        border-radius: 50%;
         vertical-align: top;
     }
 
     app-header .user-menu {
         width: 137px;
         height: auto;
-        margin-right: 50%;
         overflow: hidden;
         visibility: collapse;
         transition: visibility linear 200ms 200ms;
@@ -72,7 +72,6 @@
     app-header .user-info {
         width: 100%;
         height: 60px;
-        line-height: 1.5em;
         font-size: 0.9em;
         color: #888;
     }
@@ -91,23 +90,43 @@
         transition: transform ease-in-out 200ms;
     }
 
-    app-header .user-menu li {
-        padding-left: 16px;
-    }
-
     app-header .user-block:hover .user-menu ul {
         transform: none;
         visibility: visible;
     }
 
-    app-header .user-menu li:first-child {
-        border-bottom: 1px solid #ddd;
-    }
-
-    app-header .user-menu li:last-child {
+    app-header .user-menu li {
+        padding-left: 16px;
         height: 37px;
     }
 
-        app-header .user-menu li:last-child:hover {
+        app-header .user-menu li:first-child {
+            border-bottom: 1px solid #ddd;
+            height: auto;
+            line-height: 1.5em;
+        }
+
+        app-header .user-menu li:not(:first-child):hover {
             background: #f0f2f5;
+        }
+
+    app-header .new-task-layer {
+        left: 50%;
+        top: 0;
+    }
+
+        app-header .new-task-layer .new-task-layer-content {
+            margin-left: 50%;
+            line-height: inherit;
+        }
+
+        app-header .new-task-layer .new-task-btn {
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        app-header .new-task-layer new-task-dialog {
+            position: relative;
+            left: -200%;
+            margin-top: 15px;
         }

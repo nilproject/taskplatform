@@ -1,17 +1,15 @@
-// import fw from "./framework/framework.js"
-
 fw.defineComponent(
     "app",
     "./app.html",
     "./app.css",
     [
         {
-            name: "task-list",
-            uri: "./tasklist/tasklist.js"
+            name: "main-view",
+            uri: "../mainview/mainview.js"
         },
         {
-            name: "app-header",
-            uri: "./appheader/appheader.js"
+            name: "login-page",
+            uri: "../loginpage/loginpage.js"
         }
     ],
     function (app, element, childs, tagedNodes, params) {

@@ -1,0 +1,45 @@
+﻿new-task-dialog {
+    display: block;
+    height: 160px;
+    width: 400px;
+    background: white;
+    border-radius: 2px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8, 0 0 25px #7a7a7a;
+}
+
+    new-task-dialog div {
+        height: auto;
+    }
+
+    new-task-dialog > div {
+        height: 100px;
+        padding: 15px;
+    }
+
+    new-task-dialog .txt-container {
+        height: 100%;
+    }
+
+    new-task-dialog textarea {
+        border: none;
+        padding: 0;
+        resize: none;
+        width: 100%;
+        height: 100%;
+    }
+
+        new-task-dialog textarea:focus {
+            outline: none;
+        }
+
+    new-task-dialog .footer {
+        text-align: right;
+    }
+
+    new-task-dialog .footer {
+        white-space: nowrap;
+    }
+
+        new-task-dialog .footer .reward {
+            width: 100px;
+        }

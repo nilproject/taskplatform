@@ -3,6 +3,10 @@ var fw = (function () {
 
     var componentsCache = {};
 
+    function _relativePath(path) {
+        return path.startsWith("./") || path.startsWith("../");
+    }
+
     function defineComponent(selector, templateUri, styleUri, requires, handler) {
         if (!selector)
             throw "invalid selector";
@@ -16,8 +20,8 @@ var fw = (function () {
         var uriRoot = document.currentScript.src.split("/").slice(0, -1).join("/") + "/"
 
         componentsCache[selector.toLowerCase()] = {
-            templateUri: templateUri.startsWith("./") ? uriRoot + templateUri.substr(2) : templateUri,
-            styleUri: styleUri.startsWith("./") ? uriRoot + styleUri.substr(2) : styleUri,
+            templateUri: _relativePath(templateUri) ? uriRoot + templateUri.substr(2) : templateUri,
+            styleUri: _relativePath(styleUri) ? uriRoot + styleUri.substr(2) : styleUri,
             templateCode: null,
             loaded: false,
             loading: false,
@@ -88,8 +92,8 @@ var fw = (function () {
                 for (var dep in cacheRecord.requires) {
                     if (!(cacheRecord.requires[dep].name in componentsCache)) {
                         var uri = cacheRecord.requires[dep].uri;
-                        if (uri.startsWith("./"))
-                            uri = cacheRecord.uriRoot + uri.substr(2);
+                        if (_relativePath(uri))
+                            uri = cacheRecord.uriRoot + uri;
 
                         _appendScript(uri, function () {
                             if (!(cacheRecord.requires[dep].name in componentsCache))
@@ -233,7 +237,7 @@ var fw = (function () {
                 window.history.pushState(title, title, uri);
                 propogateUri();
             },
-            get currentUri() {
+            get currentPath() {
                 return window.location.pathname;
             }
         };
@@ -277,21 +281,21 @@ fw.defineComponent(
                 var componentKV = rules[rule].attributes.getNamedItem("component");
                 var paramsKV = rules[rule].attributes.getNamedItem("params");
 
-                var uriKV;
+                var urlKV;
                 if (rules[rule].nodeName.toLowerCase() == "router-outlet-route-default") {
-                    uriKV = { value: "" };
+                    urlKV = { value: "" };
                 } else {
-                    uriKV = rules[rule].attributes.getNamedItem("uri");
+                    urlKV = rules[rule].attributes.getNamedItem("url");
                 }
 
-                if (uriKV) {
+                if (urlKV) {
                     if (componentKV) {
-                        routes[uriKV.value] = {
+                        routes[urlKV.value] = {
                             component: componentKV.value,
                             params: paramsKV && paramsKV.value
                         };
                     } else {
-                        routes[uriKV.value] = {
+                        routes[urlKV.value] = {
                             content: rules[rule]._childs,
                             params: paramsKV && paramsKV.value
                         };
@@ -300,7 +304,8 @@ fw.defineComponent(
             }
         }
 
-        function navHandler(uri) {
+        var currentRoute = null;
+        function navHandler(url) {
             var isConnected = true;
             if ("isConnected" in element) {
                 isConnected = element.isConnected;
@@ -318,26 +323,40 @@ fw.defineComponent(
                 return;
             }
 
-            if (!routes[uri]) {
+            var route = routes[url];
+            if (!route) {
+                for (var r in routes) {
+                    if (url.match(r)) {
+                        route = routes[r];
+                        break;
+                    }
+                }
+            }
+
+            if (!route) {
                 if (routes[""]) {
-                    uri = "";
+                    url = "";
                 } else {
                     element.removeChild(element.childNodes[0]);
                     return;
                 }
             }
 
-            if (routes[uri].component) {
-                fw.prefetchComponent(routes[uri].component, function () {
-                    var child = fw.createElement(app, routes[uri].component, JSON.parse(routes[uri].params));
+            if (currentRoute === route)
+                return;
+            currentRoute = route;
+
+            if (route.component) {
+                fw.prefetchComponent(route.component, function () {
+                    var child = fw.createElement(app, route.component, JSON.parse(route.params));
                     element.innerHTML = "";
                     element.appendChild(child);
                 });
             } else {
                 element.innerHTML = "";
-                if (routes[uri].content) {
-                    for (var i = 0, len = routes[uri].content.length; i < len; i++) {
-                        element.appendChild(routes[uri].content[i]);
+                if (route.content) {
+                    for (var i = 0, len = route.content.length; i < len; i++) {
+                        element.appendChild(route.content[i]);
                     }
                 }
             }
