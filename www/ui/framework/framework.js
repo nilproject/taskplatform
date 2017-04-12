@@ -3,8 +3,17 @@ var fw = (function () {
 
     var componentsCache = {};
 
-    function _relativePath(path) {
-        return path.startsWith("./") || path.startsWith("../");
+    function _extendRelativePath(root, path) {
+        if (root[root.length - 1] === "/")
+            root = root.substr(0, root.length - 1);
+
+        if (path.startsWith("./"))
+            return root + path.substr(1);
+
+        if (path.startsWith("../"))
+            return root.split("/").slice(0, -1).join("/") + path.substr(2);
+
+        return path;
     }
 
     function defineComponent(selector, templateUri, styleUri, requires, handler) {
@@ -17,11 +26,11 @@ var fw = (function () {
         if (selector in componentsCache)
             throw "this selector is already allocated";
 
-        var uriRoot = document.currentScript.src.split("/").slice(0, -1).join("/") + "/"
+        var uriRoot = document.currentScript.src.split("/").slice(0, -1).join("/") + "/";
 
         componentsCache[selector.toLowerCase()] = {
-            templateUri: _relativePath(templateUri) ? uriRoot + templateUri.substr(2) : templateUri,
-            styleUri: _relativePath(styleUri) ? uriRoot + styleUri.substr(2) : styleUri,
+            templateUri: _extendRelativePath(uriRoot, templateUri),
+            styleUri: _extendRelativePath(uriRoot, styleUri),
             templateCode: null,
             loaded: false,
             loading: false,
@@ -83,62 +92,58 @@ var fw = (function () {
 
     function prefetchComponent(componentName, callback) {
         var cacheRecord = componentsCache[componentName];
-        if (!cacheRecord) {
-            callback && callback();
+        if (!cacheRecord || cacheRecord.loaded) {
+            callback && setTimeout(callback);
         }
 
-        function fetch() {
-            if (!cacheRecord.loaded) {
-                for (var dep in cacheRecord.requires) {
-                    if (!(cacheRecord.requires[dep].name in componentsCache)) {
-                        var uri = cacheRecord.requires[dep].uri;
-                        if (_relativePath(uri))
-                            uri = cacheRecord.uriRoot + uri;
+        var awaitingCount = 0;
+        function awaitCallback() {
+            awaitingCount--;
+            if (awaitingCount === 0) {
+                cacheRecord.loaded = true;
+                callback && setTimeout(callback);
+            }
+        }
 
-                        _appendScript(uri, function () {
-                            if (!(cacheRecord.requires[dep].name in componentsCache))
-                                throw "Invalid dependency: " + componentName + " <-- " + cacheRecord.requires[dep].name;
+        for (var dep in cacheRecord.requires) {
+            if (!(cacheRecord.requires[dep].name in componentsCache)) {
+                var uri = _extendRelativePath(cacheRecord.uriRoot, cacheRecord.requires[dep].uri);
+                awaitingCount++;
 
-                            fetch();
-                        });
-                        return;
-                    }
-                }
+                var cb = function (dependency) {
+                    if (!(dependency.name in componentsCache))
+                        console.error("Invalid dependency: " + componentName + " <-- " + dependency.name);
 
-                var loadCallback = function (setValue, result) {
-                    if (result.status == 200) {
-                        setValue(result.responseText);
-                        fetch();
-                    } else {
-                        cacheRecord.loaded = true;
-                    }
+                    awaitCallback();
                 };
 
-                if (cacheRecord.templateUri) {
-                    _load(cacheRecord.templateUri, loadCallback.bind(null, function (v) {
-                        cacheRecord.templateUri = null;
-                        cacheRecord.templateCode = v;
-                    }));
-
-                    return;
-                }
-
-                if (cacheRecord.styleUri) {
-                    _load(cacheRecord.styleUri, loadCallback.bind(null, function (v) {
-                        cacheRecord.styleUri = null;
-                        _appendStyle(v);
-                    }));
-
-                    return;
-                }
-
-                cacheRecord.loaded = true;
+                _appendScript(uri, cb.bind(null, cacheRecord.requires[dep]));
             }
-
-            callback && callback();
         }
 
-        fetch();
+        if (cacheRecord.templateUri) {
+            awaitingCount++;
+            _load(cacheRecord.templateUri, function (result) {
+                if (result.status == 200) {
+                    cacheRecord.templateUri = null;
+                    cacheRecord.templateCode = result.responseText;
+                }
+
+                awaitCallback();
+            });
+        }
+
+        if (cacheRecord.styleUri) {
+            awaitingCount++;
+            _load(cacheRecord.styleUri, function (result) {
+                if (result.status == 200) {
+                    cacheRecord.styleUri = null;
+                    _appendStyle(result.responseText);
+                }
+
+                awaitCallback();
+            });
+        }
     }
 
     function bootComponent(app, element, params, callback) {
@@ -261,14 +266,6 @@ fw.defineComponent(
 fw.prefetchComponent("router-outlet-route");
 
 fw.defineComponent(
-    "router-outlet-route-default",
-    "",
-    "data:text/css,router-outlet-route-default { display: none; }",
-    [],
-    function (app, element, childs) { element._childs = childs; });
-fw.prefetchComponent("router-outlet-route-default");
-
-fw.defineComponent(
     "router-outlet",
     "",
     "data:text/css,router-outlet { display: block; width: 100%; height: 100%; }",
@@ -334,12 +331,8 @@ fw.defineComponent(
             }
 
             if (!route) {
-                if (routes[""]) {
-                    url = "";
-                } else {
-                    element.removeChild(element.childNodes[0]);
-                    return;
-                }
+                element.innerHTML = "";
+                return;
             }
 
             if (currentRoute === route)

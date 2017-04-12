@@ -7,8 +7,8 @@
         <router-outlet-route url="/(tasks)?$" component="task-list" params='{ "tasksType": "opened" }'></router-outlet-route>
         <router-outlet-route url="/completedtasks" component="task-list" params='{ "tasksType": "completed" }'></router-outlet-route>
         <router-outlet-route url="/createdtasks" component="task-list" params='{ "tasksType": "created" }'></router-outlet-route>
-        <router-outlet-route-default>
+        <router-outlet-route url=".*">
             Здесь ничего нет ¯\_(ツ)_/¯
-        </router-outlet-route-default>
+        </router-outlet-route>
     </router-outlet>
 </main>
