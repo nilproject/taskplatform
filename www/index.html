@@ -18,8 +18,13 @@
             background: #edeef0;
         }
     </style>
+
 </head>
-<body onload="fw.bootstrap('app', new App())">
+<body>
     <app></app>
+    <script>
+        fw.lazyLoad = false;
+        fw.bootstrap('app', new App());
+    </script>
 </body>
 </html>

@@ -28,11 +28,15 @@
         border-collapse: collapse;
         width: 100%;
         height: 100%;
+        white-space: nowrap;
+        line-height: 34px;
     }
 
     app-header .nav-item {
         cursor: pointer;
         border-bottom: 1px solid transparent;
+        width: 33%;
+        display: inline-block;
     }
 
         app-header .nav-item:hover {
@@ -69,21 +73,14 @@
         visibility: visible;
     }
 
-    app-header .user-info {
-        width: 100%;
-        height: 60px;
-        font-size: 0.9em;
-        color: #888;
+    app-header .user-info span {
+        color: black;
     }
-
-        app-header .user-info span {
-            color: black;
-        }
 
     app-header .user-menu ul {
         list-style-type: none;
         background: white;
-        margin: 0 5px 0;
+        margin: 0 5px 5px;
         padding: 0;
         transform: translateY(-100%);
         box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
@@ -104,6 +101,8 @@
             border-bottom: 1px solid #ddd;
             height: auto;
             line-height: 1.5em;
+            font-size: 0.9em;
+            color: #888;
         }
 
         app-header .user-menu li:not(:first-child):hover {
@@ -121,7 +120,7 @@
         }
 
         app-header .new-task-layer .new-task-btn {
-            margin-left: 5px;
+            margin-left: 20px;
             vertical-align: middle;
         }
 

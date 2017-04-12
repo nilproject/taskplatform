@@ -1,6 +1,7 @@
 var fw = (function () {
     "use strict";
 
+    var lazyLoad = false;
     var componentsCache = {};
 
     function _extendRelativePath(root, path) {
@@ -96,10 +97,10 @@ var fw = (function () {
             callback && setTimeout(callback);
         }
 
-        var awaitingCount = 0;
+        var awaitersCount = 0;
         function awaitCallback() {
-            awaitingCount--;
-            if (awaitingCount === 0) {
+            awaitersCount--;
+            if (awaitersCount === 0) {
                 cacheRecord.loaded = true;
                 callback && setTimeout(callback);
             }
@@ -108,15 +109,19 @@ var fw = (function () {
         for (var dep in cacheRecord.requires) {
             if (!(cacheRecord.requires[dep].name in componentsCache)) {
                 var uri = _extendRelativePath(cacheRecord.uriRoot, cacheRecord.requires[dep].uri);
-                awaitingCount++;
+                awaitersCount++;
 
                 var cb = function (dependency) {
                     if (!(dependency.name in componentsCache))
                         console.error("Invalid dependency: " + componentName + " <-- " + dependency.name);
 
-                    prefetchComponent(dependency.name, function () {
+                    if (lazyLoad) {
                         awaitCallback();
-                    });
+                    } else {
+                        prefetchComponent(dependency.name, function () {
+                            awaitCallback();
+                        });
+                    }
                 };
 
                 _appendScript(uri, cb.bind(null, cacheRecord.requires[dep]));
@@ -124,7 +129,7 @@ var fw = (function () {
         }
 
         if (cacheRecord.templateUri) {
-            awaitingCount++;
+            awaitersCount++;
             _load(cacheRecord.templateUri, function (result) {
                 if (result.status == 200) {
                     cacheRecord.templateUri = null;
@@ -136,7 +141,7 @@ var fw = (function () {
         }
 
         if (cacheRecord.styleUri) {
-            awaitingCount++;
+            awaitersCount++;
             _load(cacheRecord.styleUri, function (result) {
                 if (result.status == 200) {
                     cacheRecord.styleUri = null;
@@ -255,7 +260,13 @@ var fw = (function () {
         bootstrap: bootstrap,
         createElement: createElement,
         prefetchComponent: prefetchComponent,
-        navigation: navigation
+        navigation: navigation,
+        get lazyLoad() {
+            return lazyLoad;
+        },
+        set lazyLoad(value) {
+            lazyLoad = !!value;
+        }
     }
 })();
 
