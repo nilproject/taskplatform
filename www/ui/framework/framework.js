@@ -1,6 +1,8 @@
 var fw = (function () {
     "use strict";
 
+    var globalEval = eval;
+    var currentScriptUri = null;
     var lazyLoad = false;
     var componentsCache = {};
 
@@ -27,7 +29,7 @@ var fw = (function () {
         if (selector in componentsCache)
             throw "this selector is already allocated";
 
-        var uriRoot = document.currentScript.src.split("/").slice(0, -1).join("/") + "/";
+        var uriRoot = (currentScriptUri || document.currentScript.src).split("/").slice(0, -1).join("/") + "/";
 
         componentsCache[selector.toLowerCase()] = {
             templateUri: _extendRelativePath(uriRoot, templateUri),
@@ -62,6 +64,7 @@ var fw = (function () {
 
         script.type = "text/javascript";
         script.src = scriptUri;
+        script.onerror = cb;
         script.onload = cb;
 
         head.appendChild(script);
@@ -94,7 +97,7 @@ var fw = (function () {
     function prefetchComponent(componentName, callback) {
         var cacheRecord = componentsCache[componentName];
         if (!cacheRecord || cacheRecord.loaded) {
-            callback && setTimeout(callback);
+            callback && setTimeout(callback, 0);
         }
 
         var awaitersCount = 0;
@@ -102,16 +105,27 @@ var fw = (function () {
             awaitersCount--;
             if (awaitersCount === 0) {
                 cacheRecord.loaded = true;
-                callback && setTimeout(callback);
+                callback && setTimeout(callback, 0);
             }
         }
 
         for (var dep in cacheRecord.requires) {
             if (!(cacheRecord.requires[dep].name in componentsCache)) {
-                var uri = _extendRelativePath(cacheRecord.uriRoot, cacheRecord.requires[dep].uri);
+                var url = _extendRelativePath(cacheRecord.uriRoot, cacheRecord.requires[dep].uri);
                 awaitersCount++;
 
-                var cb = function (dependency) {
+                var cb = function (dependency, url, response) {
+                    if (response.status == 200) {
+                        try {
+                            currentScriptUri = url;
+                            globalEval(response.responseText);
+                        } catch (e) {
+                            console.error(e);
+                        } finally {
+                            currentScriptUri = null;
+                        }
+                    }
+
                     if (!(dependency.name in componentsCache))
                         console.error("Invalid dependency: " + componentName + " <-- " + dependency.name);
 
@@ -124,7 +138,7 @@ var fw = (function () {
                     }
                 };
 
-                _appendScript(uri, cb.bind(null, cacheRecord.requires[dep]));
+                _load(url, cb.bind(null, cacheRecord.requires[dep], url));
             }
         }
 

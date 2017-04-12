@@ -19,12 +19,14 @@
         }
     </style>
 
-</head>
-<body>
-    <app></app>
     <script>
-        fw.lazyLoad = false;
-        fw.bootstrap('app', new App());
+        function init() {
+            fw.lazyLoad = false;
+            fw.bootstrap('app', new App());
+        }
     </script>
+</head>
+<body onload="init()">
+    <app></app>
 </body>
 </html>
