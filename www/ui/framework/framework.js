@@ -114,7 +114,9 @@ var fw = (function () {
                     if (!(dependency.name in componentsCache))
                         console.error("Invalid dependency: " + componentName + " <-- " + dependency.name);
 
-                    awaitCallback();
+                    prefetchComponent(dependency.name, function () {
+                        awaitCallback();
+                    });
                 };
 
                 _appendScript(uri, cb.bind(null, cacheRecord.requires[dep]));
