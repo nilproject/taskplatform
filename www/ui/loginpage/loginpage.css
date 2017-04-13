@@ -1,1 +1,61 @@
-﻿
+﻿login-page {
+}
+
+    login-page .backimg {
+        width: 100%;
+        opacity: 0;
+        visibility: collapse;
+        transition: opacity ease-in-out 1600ms 0ms, visibility linear 0ms 1600ms;
+        display: list-item;
+        position: absolute;
+        z-index: -1;
+    }
+
+        login-page .backimg:last-child {
+            position: inherit;
+        }
+
+        login-page .backimg.current {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity ease-in-out 1600ms 0ms, visibility linear 0ms 0ms;
+        }
+
+    login-page .img-block {
+        margin-top: 50px;
+    }
+
+    login-page .back-top {
+        height: 34px;
+        width: 100%;
+        box-shadow: #333 0 20px 40px -10px;
+        position: absolute;
+        margin-top: -34px;
+    }
+
+    login-page .back-bottom {
+        height: 34px;
+        width: 100%;
+        box-shadow: #333 0 -20px 40px -10px;
+        position: absolute;
+    }
+
+    login-page .lgn-block {
+        width: 200px;
+        height: 300px;
+        position: absolute;
+        top: 0;
+        margin-top: 12%;
+        right: 10%;
+        overflow: hidden;
+        background: rgba(255,255,255,0.9);
+        border-radius: 10px;
+        box-shadow: 0 0 7px #777;
+    }
+
+    login-page .title {
+        text-align: center;
+        font-size: 3.4em;
+        margin-top: 3%;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+    }
