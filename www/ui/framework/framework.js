@@ -2,9 +2,21 @@ var fw = (function () {
     "use strict";
 
     var globalEval = eval;
-    var currentScriptUri = null;
+    var currentScriptUrl = null;
+    var embedScripts = "currentScript" in document;
     var lazyLoad = false;
     var componentsCache = {};
+
+    function _IE_currentScript() {
+        var scripts = document.head.getElementsByTagName("script");
+        for (var i = 0; i < scripts.length; i++) {
+            if (scripts[i] && scripts[i].readyState === "interactive") {
+                return scripts[i];
+            }
+        }
+
+        return scripts[scripts.length - 1];
+    }
 
     function _extendRelativePath(root, path) {
         if (root[root.length - 1] === "/")
@@ -29,7 +41,17 @@ var fw = (function () {
         if (selector in componentsCache)
             throw "this selector is already allocated";
 
-        var uriRoot = (currentScriptUri || document.currentScript.src).split("/").slice(0, -1).join("/") + "/";
+        var uriRoot = "";
+        if (embedScripts && document.currentScript) {
+            uriRoot = document.currentScript.src;
+        } else {
+            if (currentScriptUrl) {
+                uriRoot = currentScriptUrl;
+            } else {
+                uriRoot = _IE_currentScript().src;
+            }
+        }
+        uriRoot = uriRoot.split("/").slice(0, -1).join("/") + "/";
 
         componentsCache[selector.toLowerCase()] = {
             templateUri: _extendRelativePath(uriRoot, templateUri),
@@ -115,14 +137,16 @@ var fw = (function () {
                 awaitersCount++;
 
                 var cb = function (dependency, url, response) {
-                    if (response.status == 200) {
-                        try {
-                            currentScriptUri = url;
-                            globalEval(response.responseText);
-                        } catch (e) {
-                            console.error(e);
-                        } finally {
-                            currentScriptUri = null;
+                    if (!embedScripts) {
+                        if (response.status === 200) {
+                            try {
+                                currentScriptUrl = url;
+                                globalEval(response.responseText);
+                            } catch (e) {
+                                console.error(e);
+                            } finally {
+                                currentScriptUrl = null;
+                            }
                         }
                     }
 
@@ -138,7 +162,13 @@ var fw = (function () {
                     }
                 };
 
-                _load(url, cb.bind(null, cacheRecord.requires[dep], url));
+                var bindCb = cb.bind(null, cacheRecord.requires[dep], url);
+
+                if (embedScripts) {
+                    _appendScript(url, bindCb);
+                } else {
+                    _load(url, bindCb);
+                }
             }
         }
 
@@ -347,13 +377,11 @@ fw.defineComponent(
                 return;
             }
 
-            var route = routes[url];
-            if (!route) {
-                for (var r in routes) {
-                    if (url.match(r)) {
-                        route = routes[r];
-                        break;
-                    }
+            var route;
+            for (var r in routes) {
+                if (url.match(r)) {
+                    route = routes[r];
+                    break;
                 }
             }
 

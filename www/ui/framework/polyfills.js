@@ -30,24 +30,6 @@
     });
 }
 
-if (!("currentScript" in document)) {
-    Object.defineProperty(document, "currentScript", {
-        enumerable: false,
-        configurable: true,
-        get: function () {
-            "use strict";
-            var scripts = document.head.getElementsByTagName("script");
-            for (var i = 0; i < scripts.length; i++) {
-                if (scripts[i] && scripts[i].readyState === "interactive") {
-                    return scripts[i];
-                }
-            }
-
-            return scripts[scripts.length - 1];
-        }
-    });
-}
-
 if (!String.prototype.startsWith) {
     Object.defineProperty(String.prototype, "startsWith", {
         enumerable: false,
