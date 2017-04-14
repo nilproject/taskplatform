@@ -12,6 +12,14 @@ app {
     display: none;
 }
 
+.minWidth {    
+    min-width: 920px;
+}
+
+body {    
+    min-width: 920px;
+}
+
 .content-width {
     width: 600px;
     max-width: 600px;
