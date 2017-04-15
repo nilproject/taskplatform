@@ -26,5 +26,21 @@
                 alert('user ' + data['uid'] + ' authorized');
             }
         });
+
+        setTimeout(function () {
+            var imagesUrls = [
+                "ui/assets/2.jpg",
+                "ui/assets/3.jpg"
+            ];
+
+            for (var i = 0, len = imagesUrls.length; i < len; i++) {
+                var img = document.createElement("img");
+                img.className = "minWidth backimg";
+                img.src = imagesUrls[i];
+                tagedNodes.imageSlot[0].appendChild(img);
+            }
+            
+            images = tagedNodes.imageSlot[0].getElementsByTagName("img");
+        }, 3400);
     }
 );
