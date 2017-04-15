@@ -10,6 +10,10 @@ fw.defineComponent(
         {
             name: "login-page",
             uri: "../loginpage/loginpage.js"
+        },
+        {
+            name: "registration",
+            uri: "../registration/registration.js"
         }
     ],
     function (app, element, childs, tagedNodes, params) {

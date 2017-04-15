@@ -6,27 +6,17 @@
     <script src="/ui/framework/framework.js"></script>
     <script src="/ui/app/app.js"></script>
 
-    <!--for GitHub-->
-    <script src="ui/framework/jquery-3.2.0.min.js"></script>
-    <script src="ui/framework/polyfills.js"></script>
-    <script src="ui/framework/framework.js"></script>
-    <script src="ui/app/app.js"></script>
-    
-    <style>
-        body {
-            margin: 0;
-            background: #edeef0;
-        }
-    </style>
-
     <script>
         function init() {
-            fw.lazyLoad = false;
+            fw.lazyLoad = true;
             fw.bootstrap('app', new App());
         }
     </script>
 </head>
-<body onload="init()">
+<body>
     <app></app>
+    <script>
+        init();
+    </script>
 </body>
 </html>

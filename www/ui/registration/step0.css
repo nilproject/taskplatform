@@ -1,0 +1,34 @@
+﻿step0 {
+}
+
+    step0 .role-option {
+        width: 50%;
+        height: 100%;
+        display: inline-block;
+        margin: 0;
+        transition: box-shadow ease-in-out 300ms;
+        background: white;
+        cursor: pointer;
+    }
+
+        step0 .role-option:hover {
+            box-shadow: 0 0 10px #bbb;
+        }
+
+        step0 .role-option .role-option-img {
+            margin: 45px auto 0;
+            width: 128px;
+            display: block;
+            opacity: 0.6;
+            transition: opacity ease-in-out 300ms;
+        }
+
+        step0 .role-option:hover .role-option-img {
+            opacity: 1;
+        }
+
+        step0 .role-option .role-option-title {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 2.2em;
+        }

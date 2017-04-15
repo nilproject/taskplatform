@@ -1,0 +1,28 @@
+﻿step1 {
+}
+
+    step1 .field {
+        margin: 15px 0;
+        text-align: center;
+        margin: 0 auto;
+        width: 300px;
+        text-align: left;
+    }
+
+    step1 .invalid {
+        outline: 1px solid #f77;
+    }
+
+    step1 .field-title {
+        display: inline-block;
+        width: 100px;
+        color: #222;
+        margin-right: 10px;
+    }
+
+    step1 .comment {
+        height: 70px;
+        color: #777;
+        font-size: 0.9em;
+        white-space: initial;
+    }

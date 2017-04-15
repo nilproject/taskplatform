@@ -130,6 +130,30 @@ var fw = (function () {
                 callback && setTimeout(callback, 0);
             }
         }
+        
+        if (cacheRecord.templateUri) {
+            awaitersCount++;
+            _load(cacheRecord.templateUri, function (result) {
+                if (result.status == 200) {
+                    cacheRecord.templateUri = null;
+                    cacheRecord.templateCode = result.responseText;
+                }
+
+                awaitCallback();
+            });
+        }
+
+        if (cacheRecord.styleUri) {
+            awaitersCount++;
+            _load(cacheRecord.styleUri, function (result) {
+                if (result.status == 200) {
+                    cacheRecord.styleUri = null;
+                    _appendStyle(result.responseText);
+                }
+
+                awaitCallback();
+            });
+        }
 
         for (var dep in cacheRecord.requires) {
             if (!(cacheRecord.requires[dep].name in componentsCache)) {
@@ -170,30 +194,6 @@ var fw = (function () {
                     _load(url, bindCb);
                 }
             }
-        }
-
-        if (cacheRecord.templateUri) {
-            awaitersCount++;
-            _load(cacheRecord.templateUri, function (result) {
-                if (result.status == 200) {
-                    cacheRecord.templateUri = null;
-                    cacheRecord.templateCode = result.responseText;
-                }
-
-                awaitCallback();
-            });
-        }
-
-        if (cacheRecord.styleUri) {
-            awaitersCount++;
-            _load(cacheRecord.styleUri, function (result) {
-                if (result.status == 200) {
-                    cacheRecord.styleUri = null;
-                    _appendStyle(result.responseText);
-                }
-
-                awaitCallback();
-            });
         }
     }
 
