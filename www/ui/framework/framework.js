@@ -6,6 +6,7 @@ var fw = (function () {
     var embedScripts = "currentScript" in document;
     var lazyLoad = false;
     var componentsCache = {};
+    var loadedScripts = {};
 
     function _IE_currentScript() {
         var scripts = document.head.getElementsByTagName("script");
@@ -156,11 +157,14 @@ var fw = (function () {
         }
 
         for (var dep in cacheRecord.requires) {
-            if (!(cacheRecord.requires[dep].name in componentsCache)) {
+            var dependency = cacheRecord.requires[dep];
+            if (!(dependency.uri in loadedScripts)) {
                 var url = _extendRelativePath(cacheRecord.uriRoot, cacheRecord.requires[dep].uri);
                 awaitersCount++;
 
                 var cb = function (dependency, url, response) {
+                    loadedScripts[dependency.uri] = null;
+
                     if (!embedScripts) {
                         if (response.status === 200) {
                             try {
@@ -174,7 +178,7 @@ var fw = (function () {
                         }
                     }
 
-                    if (!(dependency.name in componentsCache))
+                    if (dependency.name && !(dependency.name in componentsCache))
                         console.error("Invalid dependency: " + componentName + " <-- " + dependency.name);
 
                     if (lazyLoad) {
@@ -186,7 +190,7 @@ var fw = (function () {
                     }
                 };
 
-                var bindCb = cb.bind(null, cacheRecord.requires[dep], url);
+                var bindCb = cb.bind(null, dependency, url);
 
                 if (embedScripts) {
                     _appendScript(url, bindCb);
