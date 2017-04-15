@@ -5,7 +5,7 @@
         margin: 15px 0;
         text-align: center;
         margin: 0 auto;
-        width: 300px;
+        width: 320px;
         text-align: left;
     }
 
@@ -15,7 +15,7 @@
 
     step1 .field-title {
         display: inline-block;
-        width: 100px;
+        width: 130px;
         color: #222;
         margin-right: 10px;
     }
