@@ -26,6 +26,7 @@
 
         tagedNodes.login[0].onchange = onChangeHandler;
         tagedNodes.pass[0].onchange = onChangeHandler;
+        tagedNodes.confirmPass[0].onchange = onChangeHandler;
         tagedNodes.name[0].onchange = onChangeHandler;
 
         // HTML5
