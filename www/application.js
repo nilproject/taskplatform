@@ -10,10 +10,9 @@ function App() {
         fullName: "Big Boss"
     };
 
-    this.loadUserInfo = function (callback) {
+    function loadUserInfo(callback) {
         api.getUserInfo(function (response) {
             if (response.status === 200) {
-                console.log(response);
                 this.user = JSON.parse(response.responseText);
                 callback && callback(true);
             } else {
@@ -21,4 +20,16 @@ function App() {
             }
         })
     }
+    this.loadUserInfo = loadUserInfo;
+
+    function authViaVk(callback) {
+        api.authViaVk(function (response) {
+            if (response.status === 200) {
+                loadUserInfo(callback);
+            } else {
+                callback && callback(false);
+            }
+        });
+    }
+    this.authViaVk = authViaVk;
 }

@@ -1,6 +1,6 @@
 <?php
 
-include "./tools.php";
+include_once "tools.php";
 
 function checkAuthentication() {
     $secKey = $_SERVER['SEC_KEY'];
@@ -16,6 +16,10 @@ function makeAuthHash($userId) {
     $secKey = $_SERVER['SEC_KEY'];
 
     return hash("sha256", $userId . $secKey);
+}
+
+function makePassHash($login, $pass) {
+    return hash("sha256", $login . $pass);
 }
 
 function checkVkAuthentication($userId, $hash) {

@@ -3,15 +3,23 @@ var api = {
         $.ajax({
             url: "/api/getUserInfo.php",
             complete: callback,
-            dataType: "text"
+            dataType: "json"
         });
     },
 
-    getUserInfoByVkId: function (userId, hash, callback) {
+    authViaVk: function (userId, hash, callback) {
         $.ajax({
             url: "/api/authViaVk.php?userid=" + userId + "&hash=" + hash,
             complete: callback,
-            dataType: "text"
+            dataType: "json"
+        });
+    },
+
+    createUser: function (vkUserId, hash, login, pass, role, name, callback) {
+        $.ajax({
+            url: "/api/createUser.php?vkuserid=" + vkUserId + "&hash=" + hash + "&login=" + login + "&pass=" + pass + "&role=" + role + "&name=" + name,
+            complete: callback,
+            dataType: "json"
         });
     }
 };

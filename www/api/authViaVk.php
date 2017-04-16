@@ -1,10 +1,10 @@
 <?php
 
-include "../../backend/db/user.php";
-include "../../backend/tools.php";
-include "../../backend/security.php";
+include_once "../../backend/db/user.php";
+include_once "../../backend/tools.php";
+include_once "../../backend/security.php";
 
-if (!$_GET['userid'] || !val($_GET['userid']))
+if (!$_GET['userid'] || !intval($_GET['userid']))
     dieWithCode(400);
 
 if (!$_GET['hash'])
@@ -12,14 +12,14 @@ if (!$_GET['hash'])
 
 checkVkAuthentication($_GET['userid'], $_GET['hash']);
 
-$userId = getUserIdByVkId(val($_GET['userid']));
+$userId = getUserIdByVkId(intval($_GET['userid']));
 
-if (!$userId)
-    dieWithCode(404);
+if (!$userId) 
+    dieWithCode(403);
 
-$hash = makeAuthHash($userId);
+$hash = makeAuthHash($userId[0]['UserID']);
 
-setcookie("userid", $userId);
+setcookie("userid", $userId[0]['UserID']);
 setcookie("hash", $hash);
 
 echo '{ "result" : "success" }';

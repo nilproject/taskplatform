@@ -79,6 +79,10 @@
         text-align: center;
     }
 
+        login-page .auth-blk input {
+            width: 150px;
+        }
+
     login-page .auth-fldttl {
         margin: 5px;
     }

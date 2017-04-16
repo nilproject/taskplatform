@@ -8,7 +8,21 @@
         }
     ],
     function (app, element, childs, tagedNodes, params) {
-        VK.init({ apiId: 5985022 });
+        VK.init({
+            apiId: 5985022,
+        });
+
+        VK.Widgets.Auth("vk_auth", {
+            onAuth: function (data) {
+                api.authViaVk(data.uid, data.hash, function (response) {
+                    if (response.status === 200) {
+                        fw.navigation.navigate("/");
+                    } else if (response.status === 403) {
+                        fw.navigation.navigate("/registration?uid=" + data.uid + "&hash=" + data.hash);
+                    }
+                });
+            }
+        });
 
         var imageIndex = 0;
         var images = tagedNodes.imageSlot[0].getElementsByTagName("img");
@@ -21,13 +35,7 @@
             $(images[imageIndex]).addClass("current");
         }, 8000);
 
-        VK.Widgets.Auth("vk_auth", {
-            onAuth: function (data) {
-                alert('user ' + data['uid'] + ' authorized');
-            }
-        });
-
-        setTimeout(function () {
+        images[0].onload = function () {
             var imagesUrls = [
                 "ui/assets/2.jpg",
                 "ui/assets/3.jpg"
@@ -39,8 +47,8 @@
                 img.src = imagesUrls[i];
                 tagedNodes.imageSlot[0].appendChild(img);
             }
-            
+
             images = tagedNodes.imageSlot[0].getElementsByTagName("img");
-        }, 3400);
+        };
     }
 );

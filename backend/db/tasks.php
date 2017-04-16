@@ -1,6 +1,6 @@
 <?php
 
-include "commondb.php";
+include_once "commondb.php";
 
 const GETTASK_ALL = 0;
 const GETTASK_UNCOMPLETED = 1;

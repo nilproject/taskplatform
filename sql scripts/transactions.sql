@@ -18,7 +18,7 @@ CREATE TABLE Transactions (
     Amount DECIMAL NOT NULL,
     Created TIMESTAMP,
     PRIMARY KEY (TransactionID),
-    KEY (TargetTaskID)
+    UNIQUE KEY (TargetTaskID)
 )  ENGINE=INNODB;
 
 create index IX_Transactions_SourceUserID on Transactions(SourceUserID);

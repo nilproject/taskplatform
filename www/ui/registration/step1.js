@@ -35,7 +35,7 @@
         tagedNodes.confirmPass[0].oninput = onChangeHandler;
         tagedNodes.name[0].oninput = onChangeHandler;
 
-        element._validate = function (callback) {
+        element._validateAndSave = function (callback) {
             var valid = true;
 
             var isLoginExists = tagedNodes.login[0].value.length;
@@ -44,7 +44,15 @@
             valid &= validateField(tagedNodes.pass[0], !isLoginExists || tagedNodes.pass[0].value.length !== 0);
             valid &= validateField(tagedNodes.confirmPass[0], !isLoginExists || tagedNodes.pass[0].value === tagedNodes.confirmPass[0].value)
 
-            valid &= validateField(tagedNodes.name[0], /^[\w\d_'\s]+$/.test(tagedNodes.name[0].value));
+            valid &= validateField(tagedNodes.name[0], /^[\w\d_'\sА-я]+$/.test(tagedNodes.name[0].value));
+
+            if (valid) {
+                element._info = {
+                    login: tagedNodes.login[0].value,
+                    pass: tagedNodes.pass[0].value,
+                    name: tagedNodes.name[0].value
+                };
+            }
 
             callback && callback(valid);
         }

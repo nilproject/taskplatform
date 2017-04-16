@@ -11,7 +11,8 @@
         cursor: pointer;
     }
 
-        step0 .role-option:hover {
+        step0 .role-option:hover, 
+        step0 .role-option.current {
             box-shadow: 0 0 10px #bbb;
         }
 
@@ -23,7 +24,8 @@
             transition: opacity ease-in-out 300ms;
         }
 
-        step0 .role-option:hover .role-option-img {
+        step0 .role-option:hover .role-option-img, 
+        step0 .role-option.current .role-option-img {
             opacity: 1;
         }
 

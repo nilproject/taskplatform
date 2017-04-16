@@ -1,6 +1,6 @@
 <?php
 
-include "../../backend/db/tasks.php";
+include_once "../../backend/db/tasks.php";
 
 $taskType = GETTASK_ALL;
 switch ($_GET["type"]) {
