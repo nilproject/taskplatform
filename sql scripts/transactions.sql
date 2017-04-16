@@ -1,4 +1,6 @@
-DROP table Transactions;
+SHOW ERRORS;
+
+DROP TABLE IF EXISTS Transactions;
 
 CREATE TABLE Transactions (
     TransactionID INT8 NOT NULL AUTO_INCREMENT,
@@ -19,7 +21,7 @@ CREATE TABLE Transactions (
     KEY (TargetTaskID)
 )  ENGINE=INNODB;
 
-create index IX_Transactions_SourceUserID on `tasks_platform`.Transactions(SourceUserID);
-create index IX_Transactions_TargetUserID on `tasks_platform`.Transactions(TargetUserID);
-create index IX_Transactions_SourceTaskID on `tasks_platform`.Transactions(SourceTaskID);
+create index IX_Transactions_SourceUserID on Transactions(SourceUserID);
+create index IX_Transactions_TargetUserID on Transactions(TargetUserID);
+create index IX_Transactions_SourceTaskID on Transactions(SourceTaskID);
 -- create index IX_Transactions_TargetTaskID on `tasks_platform`.Transactions(TargetTaskID);

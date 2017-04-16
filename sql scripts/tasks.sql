@@ -1,10 +1,12 @@
-drop table Tasks;
+SHOW ERRORS;
+
+DROP TABLE IF EXISTS Tasks;
 
 CREATE TABLE Tasks (
     TaskID INT8 NOT NULL AUTO_INCREMENT,
     CreatorID INT8 NOT NULL,
     ExecutorID INT8 NULL,
-    Price DECIMAL NOT NULL,
+    Reward DECIMAL NOT NULL,
     Description NVARCHAR(4096),
     State ENUM('Created',
 			   'Asigned',
@@ -15,9 +17,6 @@ CREATE TABLE Tasks (
 
 create index IX_Tasks_CreatorID on Tasks(CreatorID);
 create index IX_Tasks_ExecutorID on Tasks(ExecutorID);
-
-create trigger TR_Test after insert on Tasks
-for each row set NEW.description = 'Hello, I''m trigger';
 
 DELIMITER //
 create trigger TR_ExecutorOverrideCheck before update on Tasks

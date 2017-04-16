@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <script src="/ui/framework/jquery-3.2.0.min.js"></script>
     <script src="/ui/framework/polyfills.js"></script>
     <script src="/ui/framework/framework.js"></script>
     <script src="/ui/app/app.js"></script>
+    <script src="/application.js"></script>
+    <script src="/api/reference.js"></script>
 
     <script>
         function init() {
             fw.lazyLoad = true;
-            fw.bootstrap('app', new App());
+            var app = new App();
+            app.loadUserInfo(function (result) {
+                if (!result)
+                    fw.navigation.navigate("/login");
+
+                fw.bootstrap('app', app);
+            });
         }
     </script>
 </head>
+
 <body>
     <app></app>
     <script>
         init();
     </script>
 </body>
+
 </html>
