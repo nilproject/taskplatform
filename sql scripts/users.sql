@@ -8,7 +8,7 @@ CREATE TABLE Users (
     `Name` NVARCHAR(128) NOT NULL,
     Login NVARCHAR(24) NULL,
     PasswordHash NVARCHAR(64) NULL,
-    Role ENUM('Сustomer', 'Executor', 'System') NOT NULL,
+    Role ENUM('Customer', 'Executor', 'System') NOT NULL,
     PRIMARY KEY (UserID), UNIQUE KEY(VkUserID), UNIQUE KEY(Login)
 )  ENGINE=INNODB;
 
