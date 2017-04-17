@@ -18,13 +18,16 @@
             position: fixed;
             margin-left: 600px;
             opacity: 0;
+            visibility: collapse;
             transition: margin ease-in-out 550ms, 
-                opacity ease-in-out 400ms;
+                opacity ease-in-out 400ms,
+                visibility linear 400ms;
         }
 
             registration .steps > *.current {
                 margin: 0;
                 opacity: 1;
+                visibility: visible;
             }
 
             registration .steps > *.visited {

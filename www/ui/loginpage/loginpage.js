@@ -2,23 +2,15 @@
     "login-page",
     "./loginpage.html",
     "./loginpage.css",
-    [
-        {
-            uri: "//vk.com/js/api/openapi.js?144"
-        }
-    ],
+    [],
     function (app, element, childs, tagedNodes, params) {
-        VK.init({
-            apiId: 5985022,
-        });
-
         VK.Widgets.Auth("vk_auth", {
             onAuth: function (data) {
                 api.authViaVk(data.uid, data.hash, function (response) {
                     if (response.status === 200) {
                         fw.navigation.navigate("/");
                     } else if (response.status === 403) {
-                        fw.navigation.navigate("/registration?uid=" + data.uid + "&hash=" + data.hash);
+                        fw.navigation.navigate("/registration?hash=" + data.hash);
                     }
                 });
             }

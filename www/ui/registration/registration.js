@@ -21,10 +21,13 @@
 
         function final() {
             var prmsRegExp = /[?&]([^=]*)=([^&]*)/g;
-            var uid = null;
+            var uid = VK.Auth.getSession().mid;
             var hash = null;
-            for (var i = 0; i < 2; i++) {
+            for (; ;) {
                 var queryPrms = prmsRegExp.exec(window.location.href);
+                if (!queryPrms)
+                    break;
+
                 switch (queryPrms[1]) {
                     case "uid": uid = queryPrms[2]; break;
                     case "hash": hash = queryPrms[2]; break;
@@ -40,7 +43,7 @@
                     if (response.responseJSON.result === "success") {
                         api.authViaVk(data.uid, data.hash, function (response) {
                             if (response.status === 200) {
-                                fw.navigation.navigate("/");
+                                window.location.href = window.location.origin;
                             } else if (response.status === 403) {
                                 // TODO будет странно, если в конце регистрации система попросит ещё раз зарегистрироваться
                                 // надо будет что-то придумать на этот случай

@@ -35,6 +35,12 @@
         tagedNodes.confirmPass[0].oninput = onChangeHandler;
         tagedNodes.name[0].oninput = onChangeHandler;
 
+        VK.Api.call('users.get', { user_ids: VK.Auth.getSession().mid }, function (r) {
+            if (r.response) {
+                tagedNodes.name[0].value = r.response[0].first_name + " " + r.response[0].last_name;
+            }
+        });
+
         element._validateAndSave = function (callback) {
             var valid = true;
 

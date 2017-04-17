@@ -4,7 +4,7 @@ include_once "commondb.php";
 include_once "../security.php";
 
 function getUserInfo($userId) {
-    return db_query('SELECT UserID, `Name`, Role FROM Users 
+    return db_query('SELECT UserID, VkUserID, `Name`, Role FROM Users 
                      WHERE UserID = ?',
                      [
                          $userId => 'i'
