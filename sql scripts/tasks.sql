@@ -9,7 +9,7 @@ CREATE TABLE Tasks (
     Reward DECIMAL NOT NULL,
     Description NVARCHAR(4096),
     State ENUM('Created',
-			   'Asigned',
+			   'Assigned',
                'Completed') NOT NULL,
     Created TIMESTAMP,
     PRIMARY KEY (TaskID)

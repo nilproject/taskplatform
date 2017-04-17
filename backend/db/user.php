@@ -11,6 +11,14 @@ function getUserInfo($userId) {
                      ])[0];   
 }
 
+function getUserRole($userId) {
+    return db_query('SELECT Role FROM Users 
+                     WHERE UserID = ?',
+                     [
+                         $userId => 'i'
+                     ])[0];   
+}
+
 function getUserIdByVkId($vkUserId) {
     return db_query('SELECT UserID FROM Users 
                      WHERE VkUserID = ?',

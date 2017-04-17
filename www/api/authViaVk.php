@@ -22,4 +22,4 @@ $hash = makeAuthHash($userId['UserID']);
 setcookie("userid", $userId['UserID']);
 setcookie("hash", $hash);
 
-echo '{ "result" : "success" }';
+echoSuccess();

@@ -24,7 +24,7 @@
 
         if (app.user.allowCreateTasks) {
             tagedNodes.newTask[0].onclick = function () {
-                $(tagedNodes.newTaskDialog[0]).removeClass("hidden");
+                tagedNodes.newTaskDialog[0]._open();
             }
         } else {
             tagedNodes.newTask[0].parentNode.removeChild(tagedNodes.newTask[0]);

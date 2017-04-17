@@ -9,9 +9,7 @@
         }
 
         tagedNodes.submit[0].onclick = function () {
-
-            // TODO
-
+            api.createTask(tagedNodes.text[0].value, tagedNodes.reward[0].value);
             close();
         }
 
@@ -20,4 +18,13 @@
             tagedNodes.text[0].value = "";
             $(element).addClass("hidden");
         }
+
+        function open() {
+            tagedNodes.reward[0].value = "";
+            tagedNodes.text[0].value = "";
+            $(element).removeClass("hidden");
+        }
+
+        element._open = open;
+        element._close = close;
     });

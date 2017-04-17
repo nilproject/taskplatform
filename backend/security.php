@@ -1,6 +1,7 @@
 <?php
 
 include_once "tools.php";
+include_once "../../backend/db/user.php";
 
 function checkAuthentication() {
     $secKey = $_SERVER['SEC_KEY'];
@@ -28,5 +29,12 @@ function checkVkAuthentication($userId, $hash) {
 
     if ($hash !== hash("md5", $appid . $userId . $secKey)) {
         dieWithCode(401);
+    }
+}
+
+function checkRole($userId, $expectedRole) {
+    $role = getUserRole($userId);
+    if ($role["Role"] !== $expectedRole) {
+        dieWithCode(403);
     }
 }

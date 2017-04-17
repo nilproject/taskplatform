@@ -22,4 +22,4 @@ $result = createUser(
 if ($result)
     echo json_encode($result);
 else
-    echo '{ "result" : "success" }';
+    echoSuccess();

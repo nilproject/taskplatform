@@ -10,15 +10,17 @@ function db_query($query, $params) {
         $types = "";
         $prms = array(&$preparedQuery, &$types);
         $cvtPrms = array();
-        foreach ($params as $value => $type) {
-            $types .= $type;
-            if ($type === 'i') {
-                $cvtPrms[] = intval($value);
-            } else {
-                $cvtPrms[] = $value;
-            }
+        if ($params){
+            foreach ($params as $value => $type) {
+                $types .= $type;
+                if ($type === 'i') {
+                    $cvtPrms[] = intval($value);
+                } else {
+                    $cvtPrms[] = $value;
+                }
 
-            $prms[] = &$cvtPrms[count($cvtPrms) - 1];
+                $prms[] = &$cvtPrms[count($cvtPrms) - 1];
+            }
         }
 
         call_user_func_array("mysqli_stmt_bind_param", $prms);

@@ -13,7 +13,17 @@ function getTasks($taskType) {
                         : null)));
 
     if ($tasksTypeCondition === null)
-        die("Invalid taskType");   
+        return null;  
 
     return db_query("SELECT * FROM Tasks" . $tasksTypeCondition);
+}
+
+function createTask($creatorId, $description, $reward) {
+    return db_query("INSERT INTO Tasks (CreatorID, Reward, Description)
+                     VALUES (?, ?, ?)",
+                     [
+                         $creatorId   => 'i',
+                         $reward      => 'i',
+                         $description => 's'
+                     ]);
 }

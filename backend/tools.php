@@ -13,3 +13,7 @@ function dieWithCode($code) {
 
     header('HTTP/1.1 ' . $codeDescription, true, $code); die($code);
 }
+
+function echoSuccess() {
+    echo '{ "result" : "success" }';
+}
