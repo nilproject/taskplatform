@@ -22,8 +22,12 @@
         tagedNodes.avatar[0].src = app.user.avatarUrl;
         tagedNodes.name[0].innerText = app.user.Name;
 
-        tagedNodes.newTask[0].onclick = function () {
-            $(tagedNodes.newTaskDialog[0]).removeClass("hidden");
+        if (app.user.allowCreateTasks) {
+            tagedNodes.newTask[0].onclick = function () {
+                tagedNodes.newTaskDialog[0]._open();
+            }
+        } else {
+            tagedNodes.newTask[0].parentNode.removeChild(tagedNodes.newTask[0]);
         }
     }
 );

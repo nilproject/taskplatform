@@ -23,6 +23,12 @@ function App() {
                 self.user = response.responseJSON;
                 self.user.Name = decodeHtml(self.user.Name);
 
+                self.user.allowCreateTasks = self.user.Role === "Customer";
+                self.user.allowExecuteTasks = self.user.Role === "Executor";
+                self.user.isSystem = self.user.Role === "System";
+
+                console.log(self.user);
+
                 VK.Api.call('users.get', { user_ids: self.user.VkUserID, fields: "photo_100" }, function (r) {
                     if (r.response) {
                         self.user.avatarUrl = r.response[0].photo_100;
