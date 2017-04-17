@@ -14,10 +14,11 @@ function db_query($query, $params) {
             $types .= $type;
             if ($type === 'i') {
                 $cvtPrms[] = intval($value);
-                $prms[] = &$cvtPrms[count($cvtPrms) - 1];
             } else {
-                $prms[] = &$value;
+                $cvtPrms[] = $value;
             }
+
+            $prms[] = &$cvtPrms[count($cvtPrms) - 1];
         }
 
         call_user_func_array("mysqli_stmt_bind_param", $prms);
