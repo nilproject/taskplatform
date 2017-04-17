@@ -25,7 +25,6 @@
             var hash = null;
             for (var i = 0; i < 2; i++) {
                 var queryPrms = prmsRegExp.exec(window.location.href);
-                console.log(queryPrms);
                 switch (queryPrms[1]) {
                     case "uid": uid = queryPrms[2]; break;
                     case "hash": hash = queryPrms[2]; break;
@@ -37,7 +36,6 @@
             Object.assign(data, tagedNodes.steps[1]._info);
 
             api.createUser(data.uid, data.hash, data.login, data.pass, data.role, data.name, function (response) {
-                console.log(response);
                 if (response.status === 200) {
                     if (response.responseJSON.result === "success") {
                         api.authViaVk(data.uid, data.hash, function (response) {

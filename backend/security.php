@@ -4,8 +4,8 @@ include_once "tools.php";
 
 function checkAuthentication() {
     $secKey = $_SERVER['SEC_KEY'];
-    $userId = $_GET['userid'];
-    $hash   = $_GET['hash'];
+    $userId = $_COOKIE['userid'];
+    $hash   = $_COOKIE['hash'];
 
     if ($hash !== hash("sha256", $userId . $secKey)) {
         dieWithCode(401);
