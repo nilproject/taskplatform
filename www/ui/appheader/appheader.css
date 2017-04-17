@@ -50,7 +50,7 @@
     }
 
     app-header .user-block {
-        width: 137px;
+        min-width: 137px;
         text-align: left;
         white-space: nowrap;
         margin-right: 50%;
