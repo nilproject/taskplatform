@@ -12,7 +12,7 @@ function getTasks($taskType, $userId, $limit, $timestamp) {
     $querySuffix = "AND Created < ? ORDER BY TaskID DESC LIMIT ?";
 
     if ($taskType === GETTASK_ALL) {
-        return db_query($queryPrefix . " WHERE 1 ", [ $timestamp => 'i', $limit => 'i' ]);
+        return db_query($queryPrefix . " WHERE 1 " . $querySuffix, [ $timestamp => 'i', $limit => 'i' ]);
     }
 
     if ($taskType === GETTASK_CREATEDBYUSER) {
