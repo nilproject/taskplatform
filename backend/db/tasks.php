@@ -3,12 +3,14 @@
 include_once "commondb.php";
 
 const GETTASK_ALL = 0;
-const GETTASK_CREATEDBYUSER = 0;
-const GETTASK_UNCOMPLETED = 1;
-const GETTASK_COMPLETED = 2;
+const GETTASK_CREATEDBYUSER = 1;
+const GETTASK_UNCOMPLETED = 2;
+const GETTASK_COMPLETED = 3;
+const GETTASK_ASSIGNEDTOUSER = 4;
+const GETTASK_COMPLETEDBYUSER = 5;
 
 function getTasks($taskType, $userId, $limit, $timestamp) {
-    $queryPrefix = "SELECT taskId, creatorId, executorId, reward, description, state, created FROM Tasks";
+    $queryPrefix = "SELECT taskId, creatorId, executorId, reward, description, status, created FROM Tasks";
     $querySuffix = "AND Created < ? ORDER BY TaskID LIMIT ?";
     $condition   = "";
     
@@ -26,13 +28,37 @@ function getTasks($taskType, $userId, $limit, $timestamp) {
         }
 
         case GETTASK_UNCOMPLETED: {
-            $condition = " WHERE State != 'Completed' ";
+            $condition = " WHERE Status != 'Done' ";
             break;
         }
 
         case GETTASK_COMPLETED: {
-            $condition = " WHERE State = 'Completed' ";
+            $condition = " WHERE Status = 'Done' ";
             break;
+        }
+
+        case GETTASK_ASSIGNEDTOUSER: {
+            $condition = " WHERE ExecutorID = ? ";
+            return db_query(
+                $queryPrefix . $condition . $querySuffix, 
+                [ $timestamp, $userId, $limit ],
+                'iii');
+        }
+
+        case GETTASK_COMPLETEDBYUSER: {
+            $condition = " WHERE ExecutorID = ? AND Status = 'Done' ";
+            return db_query(
+                $queryPrefix . $condition . $querySuffix, 
+                [ $timestamp, $userId, $limit ],
+                'iii');
+        }
+
+        case GETTASK_UNCOMPLETEDBYUSER: {
+            $condition = " WHERE ExecutorID = ? AND Status != 'Done' ";
+            return db_query(
+                $queryPrefix . $condition . $querySuffix, 
+                [ $timestamp, $userId, $limit ],
+                'iii');
         }
 
         default: return null;
@@ -56,9 +82,9 @@ function createTask($creatorId, $description, $reward) {
                      'iisi');
 }
 
-function completeTask($userid, $taskid) {
+function completeTask($userId, $taskid) {
     return db_query("UPDATE Tasks
-                     SET ExecutorID = ?
+                     SET ExecutorID = ?, Status = 'Done'
                      WHERE TaskID = ?",
                      [
                          $userId,

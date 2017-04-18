@@ -52,4 +52,12 @@
         display: inline-block;
         cursor: default;
         margin-right: 15px;
-    }      
+    }    
+
+    task-list-item .completed-label {
+        display: none;
+    }
+
+    task-list-item.completed .completed-label {
+        display: inline-block;
+    }

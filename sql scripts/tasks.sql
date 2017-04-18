@@ -8,9 +8,9 @@ CREATE TABLE Tasks (
     ExecutorID INT8 NULL,
     Reward DECIMAL NOT NULL,
     Description NVARCHAR(4096),
-    State ENUM('Created',
+    Status ENUM('ToDo',
 			   'Assigned',
-               'Completed') NOT NULL,
+               'Done') NOT NULL,
     Created INT8 NOT NULL,
     PRIMARY KEY (TaskID)
 )  ENGINE=INNODB;

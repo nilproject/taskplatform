@@ -33,9 +33,17 @@ var api = {
         });
     },
 
-    getTasks: function (type, callback) {
+    getTasks: function (type, timeoffset, limit, callback) {
         $.ajax({
-            url: "/api/getTasks.php?type=" + escape(type),
+            url: "/api/getTasks.php?type=" + escape(type) + "&time=" + escape(timeoffset) + "&limit=" + escape(limit),
+            complete: callback,
+            dataType: "json"
+        });
+    },
+
+    completeTask: function (taskId, callback) {
+        $.ajax({
+            url: "/api/completeTask.php?taskid=" + escape(taskId),
             complete: callback,
             dataType: "json"
         });

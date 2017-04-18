@@ -11,18 +11,23 @@ checkAuthentication();
 $taskType = GETTASK_ALL;
 switch ($_GET["type"]) {
     case null: 
-    case "opened": $taskType = GETTASK_UNCOMPLETED;  break;
-    case "completed": $taskType = GETTASK_COMPLETED; break;
-    case "created": $taskType = GETTASK_CREATEDBYUSER; break;
+    case "todo": $taskType = GETTASK_UNCOMPLETED;  break;
+    case "done": $taskType = GETTASK_COMPLETED; break;
+    case "my": $taskType = GETTASK_ASSIGNEDTOUSER; break;
+    case "owned": $taskType = GETTASK_CREATEDBYUSER; break;
     case "all": $taskType = GETTASK_ALL; break;
     default: dieWithCode(400);
 }
 
-$timestamp = $_GET["time"];
-if (strlen($timestamp) === 0)
+$timestamp = intval($_GET["time"]);
+if ($timestamp === 0)
     $timestamp = PHP_INT_MAX;
 
-$tasks = getTasks($taskType, $_COOKIE["userid"], 100, intval($timestamp));
+$limit = intval($_GET["limit"]);
+if ($limit === 0)
+    $limit = 25;
+
+$tasks = getTasks($taskType, intval($_COOKIE["userid"]), $limit, $timestamp);
 
 if ($tasks === null)
     dieWithCode(500);
