@@ -4,10 +4,15 @@
     "./taskListItem.css",
     [],
     function (app, element, childs, tagedNodes, params) {
-        tagedNodes.text[0].innerText = params.text;
-        tagedNodes.name[0].innerText = app.user.name;
-        tagedNodes.time[0].innerText = Date();
-        tagedNodes.avatar[0].src = app.user.avatarUrl;
+        tagedNodes.text[0].innerText = app.decodeHtml(params.description);
+        tagedNodes.time[0].innerText = Date(params.created);
+        tagedNodes.reward[0].innerText = params.reward;
+
+        tagedNodes.name[0].innerText = app.decodeHtml(params.users[params.creatorId].name);
+
+        app.getVkUser(params.users[params.creatorId].vkUserId, function (user) {
+            tagedNodes.avatar[0].src = user.photo_100;
+        });
 
         if (app.user.allowExecuteTasks) {
             tagedNodes.doButton[0].onclick = function () {

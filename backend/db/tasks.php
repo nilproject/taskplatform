@@ -8,7 +8,7 @@ const GETTASK_UNCOMPLETED = 1;
 const GETTASK_COMPLETED = 2;
 
 function getTasks($taskType, $userId, $limit, $timestamp) {
-    $queryPrefix = "SELECT taskId, creatorId, executorID, reward, description, state, created FROM Tasks";
+    $queryPrefix = "SELECT taskId, creatorId, executorId, reward, description, state, created FROM Tasks";
     $querySuffix = "AND Created < ? ORDER BY TaskID DESC LIMIT ?";
 
     if ($taskType === GETTASK_ALL) {

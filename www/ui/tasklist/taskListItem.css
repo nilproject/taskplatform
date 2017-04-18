@@ -8,9 +8,6 @@
     padding: 10px;
 }
 
-    task-list-item .name {
-    }
-
     task-list-item .avatar {
         vertical-align: top;
     }
@@ -42,4 +39,17 @@
     task-list-item .footer {
         text-align: right;
         margin-top: 10px;
-    }        
+        vertical-align: middle;
+    }  
+
+    task-list-item .reward-title {
+        display: inline-block;
+        cursor: default;
+        color: #888;
+    }
+
+    task-list-item .reward {
+        display: inline-block;
+        cursor: default;
+        margin-right: 15px;
+    }      

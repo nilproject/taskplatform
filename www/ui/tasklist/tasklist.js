@@ -12,7 +12,11 @@ fw.defineComponent(
         fw.prefetchComponent("task-list-item", function () {
             api.getTasks(params.tasksType, function (response) {
                 if (response.status === 200) {
-                    console.log(response.responseJSON);
+                    var data = response.responseJSON;
+                    for (var i = 0, len = data.tasks.length; i < len; i++) {
+                        var item = fw.createElement(app, "task-list-item", Object.assign({ users: data.users }, data.tasks[i]));
+                        tagedNodes.list[0].appendChild(item);
+                    }
                 }
             });
         });
