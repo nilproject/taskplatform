@@ -8,6 +8,7 @@ function dieWithCode($code) {
         case 401: $codeDescription .= ' Unauthorized'; break;
         case 403: $codeDescription .= ' Forbidden'; break ;
         case 404: $codeDescription .= ' Not Found'; break;
+        case 500: $codeDescription .= ' Internal Rrror'; break;
     }
 
 

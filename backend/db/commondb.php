@@ -6,6 +6,9 @@ function db_query($query, $params) {
 
     try {
         $preparedQuery = mysqli_prepare($db, $query);
+
+        if (!$preparedQuery)
+            return ["error" => "Invalid request"];
         
         $types = "";
         $prms = array(&$preparedQuery, &$types);

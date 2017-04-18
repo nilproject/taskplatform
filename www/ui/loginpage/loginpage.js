@@ -8,7 +8,7 @@
             onAuth: function (data) {
                 api.authViaVk(data.uid, data.hash, function (response) {
                     if (response.status === 200) {
-                        fw.navigation.navigate("/");
+                        window.location.href = "/";
                     } else if (response.status === 403) {
                         fw.navigation.navigate("/registration?hash=" + data.hash);
                     }

@@ -11,6 +11,8 @@ if (!$_POST["description"] || !$_POST["reward"])
 checkAuthentication();
 checkRole($_COOKIE['userid'], ROLE_CUSTOMER);
 
-createTask($_COOKIE['userid'], $_POST["description"], $_POST["reward"]);
+$result = createTask($_COOKIE['userid'], $_POST["description"], $_POST["reward"]);
+if ($result === null || $result["error"])
+    dieWithCode(500);
 
 echoSuccess();

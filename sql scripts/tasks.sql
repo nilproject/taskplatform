@@ -11,12 +11,13 @@ CREATE TABLE Tasks (
     State ENUM('Created',
 			   'Assigned',
                'Completed') NOT NULL,
-    Created TIMESTAMP,
+    Created INT8 NOT NULL,
     PRIMARY KEY (TaskID)
 )  ENGINE=INNODB;
 
 create index IX_Tasks_CreatorID on Tasks(CreatorID);
 create index IX_Tasks_ExecutorID on Tasks(ExecutorID);
+create index IX_Tasks_Created on Tasks(Created);
 
 DELIMITER //
 create trigger TR_ExecutorOverrideCheck before update on Tasks

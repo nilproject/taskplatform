@@ -21,15 +21,13 @@ function App() {
         api.getUserInfo(function (response) {
             if (response.status === 200) {
                 self.user = response.responseJSON;
-                self.user.Name = decodeHtml(self.user.Name);
+                self.user.name = decodeHtml(self.user.name);
 
-                self.user.allowCreateTasks = self.user.Role === "Customer";
-                self.user.allowExecuteTasks = self.user.Role === "Executor";
-                self.user.isSystem = self.user.Role === "System";
+                self.user.allowCreateTasks = self.user.role === "Customer";
+                self.user.allowExecuteTasks = self.user.role === "Executor";
+                self.user.isSystem = self.user.role === "System";
 
-                console.log(self.user);
-
-                VK.Api.call('users.get', { user_ids: self.user.VkUserID, fields: "photo_100" }, function (r) {
+                VK.Api.call('users.get', { user_ids: self.user.vkUserId, fields: "photo_100" }, function (r) {
                     if (r.response) {
                         self.user.avatarUrl = r.response[0].photo_100;
                     }

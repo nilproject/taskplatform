@@ -5,7 +5,7 @@
     [],
     function (app, element, childs, tagedNodes, params) {
         tagedNodes.text[0].innerText = params.text;
-        tagedNodes.name[0].innerText = app.user.Name;
+        tagedNodes.name[0].innerText = app.user.name;
         tagedNodes.time[0].innerText = Date();
         tagedNodes.avatar[0].src = app.user.avatarUrl;
 

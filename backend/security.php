@@ -34,7 +34,7 @@ function checkVkAuthentication($userId, $hash) {
 
 function checkRole($userId, $expectedRole) {
     $role = getUserRole($userId);
-    if ($role["Role"] !== $expectedRole) {
+    if ($role["role"] !== $expectedRole) {
         dieWithCode(403);
     }
 }

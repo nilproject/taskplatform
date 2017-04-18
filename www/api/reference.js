@@ -9,7 +9,7 @@ var api = {
 
     authViaVk: function (userId, hash, callback) {
         $.ajax({
-            url: "/api/authViaVk.php?userid=" + userId + "&hash=" + hash,
+            url: "/api/authViaVk.php?userid=" + escape(userId) + "&hash=" + escape(hash),
             complete: callback,
             dataType: "json"
         });
@@ -17,7 +17,7 @@ var api = {
 
     createUser: function (vkUserId, hash, login, pass, role, name, callback) {
         $.ajax({
-            url: "/api/createUser.php?vkuserid=" + vkUserId + "&hash=" + hash + "&login=" + escape(login) + "&pass=" + escape(pass) + "&role=" + role + "&name=" + escape(name),
+            url: "/api/createUser.php?vkuserid=" + escape(vkUserId) + "&hash=" + escape(hash) + "&login=" + escape(login) + "&pass=" + escape(pass) + "&role=" + escape(role) + "&name=" + escape(name),
             complete: callback,
             dataType: "json"
         });
@@ -27,7 +27,15 @@ var api = {
         $.ajax({
             url: "/api/createTask.php",
             method: "POST",
-            data: "description=" + escape(description) + "&reward=" + reward,
+            data: "description=" + escape(description) + "&reward=" + escape(reward),
+            complete: callback,
+            dataType: "json"
+        });
+    },
+
+    getTasks: function (type, callback) {
+        $.ajax({
+            url: "/api/getTasks.php?type=" + escape(type),
             complete: callback,
             dataType: "json"
         });

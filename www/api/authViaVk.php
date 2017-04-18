@@ -17,9 +17,9 @@ $userId = getUserIdByVkId(intval($_GET['userid']));
 if (!$userId) 
     dieWithCode(403);
 
-$hash = makeAuthHash($userId['UserID']);
+$hash = makeAuthHash($userId['userId']);
 
-setcookie("userid", $userId['UserID']);
+setcookie("userid", $userId['userId']);
 setcookie("hash", $hash);
 
 echoSuccess();

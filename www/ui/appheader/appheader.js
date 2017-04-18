@@ -20,7 +20,7 @@
         }
 
         tagedNodes.avatar[0].src = app.user.avatarUrl;
-        tagedNodes.name[0].innerText = app.user.Name;
+        tagedNodes.name[0].innerText = app.user.name;
 
         if (app.user.allowCreateTasks) {
             tagedNodes.newTask[0].onclick = function () {
