@@ -11,7 +11,7 @@ const GETTASK_COMPLETEDBYUSER = 5;
 
 function getTasks($taskType, $userId, $limit, $timestamp) {
     $queryPrefix = "SELECT taskId, creatorId, executorId, reward, description, status, created FROM Tasks";
-    $querySuffix = "AND Created < ? ORDER BY TaskID LIMIT ?";
+    $querySuffix = "AND Created < ? ORDER BY TaskID DESC LIMIT ?";
     $condition   = "";
     
     switch ($taskType) {
