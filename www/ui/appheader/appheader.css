@@ -61,6 +61,10 @@
         vertical-align: top;
     }
 
+    app-header .name {
+        padding: 0 4px 0 0;
+    }
+
     app-header .user-menu {
         width: 137px;
         height: auto;
