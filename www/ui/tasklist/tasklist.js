@@ -12,7 +12,8 @@ fw.defineComponent(
         "use strict";
 
         var time = 0;
-        function loadTasks() {
+        var lastTask = null;
+        function loadTasks(cb) {
             api.getTasks(params.taskStatus, time, 25, function (response) {
                 if (response.status === 200) {
                     var data = response.responseJSON;
@@ -21,13 +22,28 @@ fw.defineComponent(
 
                         time = data.tasks[i].created;
                         tagedNodes.list[0].appendChild(item);
+
+                        lastTask = item;
                     }
                 }
+
+                cb && cb();
             });
         }
 
         fw.prefetchComponent("task-list-item", function () {
             loadTasks();
+        });
+
+        var suppressLoad = false;
+        window.addEventListener("scroll", function () {
+            if (suppressLoad)
+                return;
+
+            if (lastTask.getBoundingClientRect().top < window.innerHeight * 1.2) {
+                suppressLoad = true;
+                loadTasks(function () { suppressLoad = false; });
+            }
         });
     }
 )
