@@ -9,34 +9,60 @@ const GETTASK_COMPLETED = 2;
 
 function getTasks($taskType, $userId, $limit, $timestamp) {
     $queryPrefix = "SELECT taskId, creatorId, executorId, reward, description, state, created FROM Tasks";
-    $querySuffix = "AND Created < ? ORDER BY TaskID DESC LIMIT ?";
+    $querySuffix = "AND Created < ? ORDER BY TaskID LIMIT ?";
+    $condition   = "";
+    
+    switch ($taskType) {
+        case GETTASK_CREATEDBYUSER: {
+            return db_query(
+                $queryPrefix . " WHERE CreatorID = ? " . $querySuffix, 
+                [ $userId, $timestamp, $limit],
+                'iii');    
+        }
 
-    if ($taskType === GETTASK_ALL) {
-        return db_query($queryPrefix . " WHERE 1 " . $querySuffix, [ $timestamp => 'i', $limit => 'i' ]);
+        case GETTASK_ALL: {
+            $condition = " WHERE 1 ";
+            break;
+        }
+
+        case GETTASK_UNCOMPLETED: {
+            $condition = " WHERE State != 'Completed' ";
+            break;
+        }
+
+        case GETTASK_COMPLETED: {
+            $condition = " WHERE State = 'Completed' ";
+            break;
+        }
+
+        default: return null;
     }
 
-    if ($taskType === GETTASK_CREATEDBYUSER) {
-        return db_query($queryPrefix . " WHERE CreatorID = ? " . $querySuffix, [ $userId => 'i', $timestamp => 'i', $limit => 'i' ]);
-    }
-
-    if ($taskType === GETTASK_UNCOMPLETED) {
-        return db_query($queryPrefix . " WHERE State != 'Completed' " . $querySuffix, [ $timestamp => 'i', $limit => 'i' ]);
-    }
-
-    if ($taskType === GETTASK_UNCOMPLETED) {
-        return db_query($queryPrefix . " WHERE State = 'Completed' " . $querySuffix, [ $timestamp => 'i', $limit => 'i' ]);
-    }
-
-    return null;
+    return db_query(
+        $queryPrefix . $condition . $querySuffix, 
+        [ $timestamp, $limit ],
+        'ii');
 }
 
 function createTask($creatorId, $description, $reward) {
     return db_query("INSERT INTO Tasks (CreatorID, Reward, Description, Created)
                      VALUES (?, ?, ?, ?)",
                      [
-                         $creatorId               => 'i',
-                         $reward                  => 'i',
-                         $description             => 's',
-                         intval(microtime(true) * 1000) => 'i'
-                     ]);
+                         $creatorId,
+                         $reward,
+                         $description,
+                         intval(microtime(true) * 1000)
+                     ], 
+                     'iisi');
+}
+
+function completeTask($userid, $taskid) {
+    return db_query("UPDATE Tasks
+                     SET ExecutorID = ?
+                     WHERE TaskID = ?",
+                     [
+                         $userId,
+                         $taskid,
+                     ],
+                     'ii');
 }

@@ -7,8 +7,9 @@ function getUserInfo($userId) {
     return db_query('SELECT userId, vkUserId, `name`, role FROM Users 
                      WHERE UserID = ?',
                      [
-                         $userId => 'i'
-                     ])[0];   
+                         $userId
+                     ],
+                     'i')[0];   
 }
 
 // Internal call only!
@@ -30,16 +31,18 @@ function getUserRole($userId) {
     return db_query('SELECT role FROM Users 
                      WHERE UserID = ?',
                      [
-                         $userId => 'i'
-                     ])[0];   
+                         $userId
+                     ],
+                     'i')[0];   
 }
 
 function getUserIdByVkId($vkUserId) {
     return db_query('SELECT userId FROM Users 
                      WHERE VkUserID = ?',
                      [
-                         $vkUserId => 'i'
-                     ])[0];
+                         $vkUserId
+                     ],
+                     'i')[0];
 }
 
 function createUser($vkUserId, $login, $pass, $role, $name) {
@@ -48,10 +51,11 @@ function createUser($vkUserId, $login, $pass, $role, $name) {
     return db_query('INSERT INTO Users (VkUserID, `Name`, Login, PasswordHash, Role) 
                      VALUES (?, ?, ?, ?, ?)',
                      [
-                         $vkUserId => 'i',
-                         $name     => 's',
-                         $login    => 's',
-                         $passHash => 's',
-                         $role     => 's'
-                     ]);
+                         $vkUserId,
+                         $name,
+                         $login,
+                         $passHash,
+                         $role
+                     ],
+                     'issss');
 }
