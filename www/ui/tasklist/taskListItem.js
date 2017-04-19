@@ -6,7 +6,7 @@
     function (app, element, childs, tagedNodes, params) {
         tagedNodes.text[0].innerText = app.decodeHtml(params.description);
         tagedNodes.time[0].innerText = new Date(+params.created);
-        tagedNodes.reward[0].innerText = params.reward;
+        tagedNodes.reward[0].innerText = +params.reward;
 
         tagedNodes.name[0].innerText = app.decodeHtml(params.users[params.creatorId].name);
 

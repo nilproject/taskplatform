@@ -23,7 +23,7 @@ function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;") {
             $localTypes = "";
             $prms = array(&$preparedQuery, &$localTypes);
             $cvtPrms = array();
-            if ($params){
+            if ($params) {
                 for (; $prmsCount --> 0; $paramsIndex++) {
                     $cvtPrms[] = $params[$paramsIndex];
                     $localTypes .= $types[$paramsIndex];

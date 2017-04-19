@@ -6,7 +6,7 @@ CREATE TABLE Tasks (
     TaskID INT8 NOT NULL AUTO_INCREMENT,
     CreatorID INT8 NOT NULL,
     ExecutorID INT8 NULL,
-    Reward DECIMAL NOT NULL,
+    Reward DECIMAL(16,4) NOT NULL,
     Description NVARCHAR(4096),
     Status ENUM('ToDo',
 			   'Assigned',

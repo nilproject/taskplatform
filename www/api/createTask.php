@@ -8,9 +8,9 @@ include_once "../../backend/db/tasks.php";
 if (strlen($_POST["description"]) === 0)
     dieWithCode(400);
 
-$reward = intval($_POST["reward"]);
-if ($reward < 0 || $reward != $_POST["reward"])
+if (!is_numeric($_POST["reward"]))
     dieWithCode(400);
+$reward = floatval($_POST["reward"]);
 
 checkAuthentication();
 checkRole($_COOKIE['userid'], ROLE_CUSTOMER);
