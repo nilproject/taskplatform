@@ -19,7 +19,7 @@ if (!$userId)
 
 $hash = makeAuthHash($userId['userId']);
 
-setcookie("userid", $userId['userId']);
-setcookie("hash", $hash);
+setcookie("userid", $userId['userId'], 0, "", $_SERVER["HTTP_REFERER"], false, true);
+setcookie("hash", $hash, 0, "", $_SERVER["HTTP_REFERER"], false, true);
 
 echoSuccess();
