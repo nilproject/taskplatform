@@ -15,8 +15,10 @@ fw.defineComponent(
         var lastTask = null;
         function loadTasks(cb) {
             api.getTasks(params.taskStatus, time, 25, function (response) {
+                var loaded = false;
                 if (response.status === 200) {
                     var data = response.responseJSON;
+                    loaded = !!data.tasks.length;
                     for (var i = 0, len = data.tasks.length; i < len; i++) {
                         var item = fw.createElement(app, "task-list-item", Object.assign({ users: data.users }, data.tasks[i]));
 
@@ -27,7 +29,7 @@ fw.defineComponent(
                     }
                 }
 
-                cb && cb();
+                cb && cb(loaded);
             });
         }
 
@@ -42,7 +44,9 @@ fw.defineComponent(
 
             if (lastTask.getBoundingClientRect().top < window.innerHeight * 1.2) {
                 suppressLoad = true;
-                loadTasks(function () { suppressLoad = false; });
+                loadTasks(function (loaded) {
+                    suppressLoad = !loaded;
+                });
             }
         });
     }
