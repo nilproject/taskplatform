@@ -15,9 +15,9 @@ var api = {
         });
     },
 
-    createUser: function (vkUserId, hash, login, pass, role, name, callback) {
+    createUser: function (vkUserId, hash, role, name, callback) {
         $.ajax({
-            url: "/api/createUser.php?vkuserid=" + escape(vkUserId) + "&hash=" + escape(hash) + "&login=" + escape(login) + "&pass=" + escape(pass) + "&role=" + escape(role) + "&name=" + escape(name),
+            url: "/api/createUser.php?vkuserid=" + escape(vkUserId) + "&hash=" + escape(hash) + "&role=" + escape(role) + "&name=" + escape(name),
             complete: callback,
             dataType: "json"
         });

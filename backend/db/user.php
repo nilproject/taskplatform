@@ -45,17 +45,15 @@ function getUserIdByVkId($vkUserId) {
                      'i')[0];
 }
 
-function createUser($vkUserId, $login, $pass, $role, $name) {
+function createUser($vkUserId, $role, $name) {
     $passHash = makePassHash($login, $pass);
 
-    return db_query('INSERT INTO Users (VkUserID, `Name`, Login, PasswordHash, Role) 
-                     VALUES (?, ?, ?, ?, ?)',
+    return db_query('INSERT INTO Users (VkUserID, `Name`, Role) 
+                     VALUES (?, ?, ?)',
                      [
                          $vkUserId,
                          $name,
-                         $login,
-                         $passHash,
                          $role
                      ],
-                     'issss');
+                     'iss');
 }

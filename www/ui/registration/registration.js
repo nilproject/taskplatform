@@ -38,7 +38,7 @@
             Object.assign(data, tagedNodes.steps[0]._info);
             Object.assign(data, tagedNodes.steps[1]._info);
 
-            api.createUser(data.uid, data.hash, data.login, data.pass, data.role, data.name, function (response) {
+            api.createUser(data.uid, data.hash, data.role, data.name, function (response) {
                 if (response.status === 200) {
                     if (response.responseJSON.result === "success") {
                         api.authViaVk(data.uid, data.hash, function (response) {
