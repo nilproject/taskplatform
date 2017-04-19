@@ -10,15 +10,16 @@ const GETTASK_ASSIGNEDTOUSER = 4;
 const GETTASK_COMPLETEDBYUSER = 5;
 
 function getTasks($taskType, $userId, $limit, $timestamp) {
-    $queryPrefix = "SELECT taskId, creatorId, executorId, reward, description, status, created FROM Tasks";
-    $querySuffix = "AND Created < ? ORDER BY TaskID DESC LIMIT ?";
+    $queryPrefix = "CALL getTasks(?, ?); 
+                    GO;
+                    SELECT taskId, creatorId, executorId, reward, description, status, created FROM rslt_taskList";
     $condition   = "";
     
     switch ($taskType) {
         case GETTASK_CREATEDBYUSER: {
             return db_query(
-                $queryPrefix . " WHERE CreatorID = ? " . $querySuffix, 
-                [ $userId, $timestamp, $limit],
+                $queryPrefix . " WHERE CreatorID = ? ", 
+                [ $timestamp, $limit, $userId ],
                 'iii');    
         }
 
@@ -40,7 +41,7 @@ function getTasks($taskType, $userId, $limit, $timestamp) {
         case GETTASK_ASSIGNEDTOUSER: {
             $condition = " WHERE ExecutorID = ? ";
             return db_query(
-                $queryPrefix . $condition . $querySuffix, 
+                $queryPrefix . $condition, 
                 [ $timestamp, $userId, $limit ],
                 'iii');
         }
@@ -48,7 +49,7 @@ function getTasks($taskType, $userId, $limit, $timestamp) {
         case GETTASK_COMPLETEDBYUSER: {
             $condition = " WHERE ExecutorID = ? AND Status = 'Done' ";
             return db_query(
-                $queryPrefix . $condition . $querySuffix, 
+                $queryPrefix . $condition, 
                 [ $timestamp, $userId, $limit ],
                 'iii');
         }
@@ -56,7 +57,7 @@ function getTasks($taskType, $userId, $limit, $timestamp) {
         case GETTASK_UNCOMPLETEDBYUSER: {
             $condition = " WHERE ExecutorID = ? AND Status != 'Done' ";
             return db_query(
-                $queryPrefix . $condition . $querySuffix, 
+                $queryPrefix . $condition, 
                 [ $timestamp, $userId, $limit ],
                 'iii');
         }
@@ -65,7 +66,7 @@ function getTasks($taskType, $userId, $limit, $timestamp) {
     }
 
     return db_query(
-        $queryPrefix . $condition . $querySuffix, 
+        $queryPrefix . $condition, 
         [ $timestamp, $limit ],
         'ii');
 }
