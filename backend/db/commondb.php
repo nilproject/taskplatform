@@ -1,53 +1,59 @@
 <?php
 
-function db_query($query, $params, $types) {
+function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;") {
     $db = mysqli_connect($_SERVER["DB_HOST"], $_SERVER["DB_LOGIN"], $_SERVER["DB_PASS"], $_SERVER["DB_NAME"])
         or die('dberror: ' . mysql_error());    
 
     try {
-        $preparedQuery = mysqli_prepare($db, $query);
-
-        if (!$preparedQuery)
-            return ["error" => "Invalid request"];
-        
-        $prms = array(&$preparedQuery, &$types);
-        $cvtPrms = array();
-        if ($params){
-            foreach ($params as $key => $value) {
-                if ($types[$key] === 'i') {
-                    $cvtPrms[] = intval($value);
-                } else {
-                    $cvtPrms[] = $value;
-                }
-
-                $prms[] = &$cvtPrms[count($cvtPrms) - 1];
-            }
-        }
-
-        call_user_func_array("mysqli_stmt_bind_param", $prms);
-
-        mysqli_stmt_execute($preparedQuery);
-        
-        $queryResult = mysqli_stmt_get_result($preparedQuery);        
-        $errorList = mysqli_error_list($db);
-        $success = true;
-        $errorMessage = "";
-        foreach ($errorList as $channel => $errors) {
-            foreach ($errors as $key => $error) {
-                $success = false;
-                $errorMessage .= $key . "  " . $error . "\n";
-            }
-        }
-
-        if (!$success)
-            return array("error" => $errorMessage);
-
         $result = array();
-        while ($line = mysqli_fetch_assoc($queryResult)) {
-            $result[] = $line;
-        }
-        mysqli_free_result($queryResult);
+        $paramsIndex = 0;
+        $queries = explode($queriesDelimiter, $multiquery);        
+        foreach ($queries as $query) {
+            $prmsCount = 0;
+            for ($i = 0, $len = strlen($query); $i < $len; $i++) {
+                if ($query[$i] === '?')
+                    $prmsCount++;
+            }
 
+            $preparedQuery = mysqli_prepare($db, $query);
+
+            if (!$preparedQuery)
+                return ["error" => "Invalid request"];
+            
+            $localTypes = "";
+            $prms = array(&$preparedQuery, &$localTypes);
+            $cvtPrms = array();
+            if ($params){
+                for (; $prmsCount --> 0; $paramsIndex++) {
+                    $cvtPrms[] = $params[$paramsIndex];
+                    $localTypes .= $types[$paramsIndex];
+                    $prms[] = &$cvtPrms[count($cvtPrms) - 1];
+                }
+            }
+
+            call_user_func_array("mysqli_stmt_bind_param", $prms);
+
+            mysqli_stmt_execute($preparedQuery);
+            
+            $queryResult = mysqli_stmt_get_result($preparedQuery);        
+            $errorList = mysqli_error_list($db);
+            $success = true;
+            $errorMessage = "";
+            foreach ($errorList as $channel => $errors) {
+                foreach ($errors as $key => $error) {
+                    $success = false;
+                    $errorMessage .= $key . "  " . $error . "\n";
+                }
+            }
+
+            if (!$success)
+                return array("error" => $errorMessage);
+
+            while ($line = mysqli_fetch_assoc($queryResult)) {
+                $result[] = $line;
+            }
+            mysqli_free_result($queryResult);
+        }
         return $result;
     } finally {
         mysqli_close($db);
