@@ -41,6 +41,14 @@ var api = {
         });
     },
 
+    getNewerTasks: function (type, timeoffset, limit, callback) {
+        $.ajax({
+            url: "/api/getNewerTasks.php?type=" + escape(type) + "&time=" + escape(timeoffset) + "&limit=" + escape(limit),
+            complete: callback,
+            dataType: "json"
+        });
+    },
+
     completeTask: function (taskId, callback) {
         $.ajax({
             url: "/api/completeTask.php?taskid=" + escape(taskId),

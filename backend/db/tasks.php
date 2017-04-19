@@ -9,8 +9,11 @@ const GETTASK_COMPLETED = 3;
 const GETTASK_ASSIGNEDTOUSER = 4;
 const GETTASK_COMPLETEDBYUSER = 5;
 
-function getTasks($taskType, $userId, $limit, $timestamp) {
-    $queryPrefix = "CALL getTasks(?, ?); 
+const GETTASK_DIRECTION_OLD = 0;
+const GETTASK_DIRECTION_NEW = 1;
+
+function getTasks($taskType, $userId, $limit, $timestamp, $compareDirection) {
+    $queryPrefix = "CALL getTasks(?, ?, ?); 
                     GO;
                     SELECT taskId, creatorId, executorId, reward, description, status, created FROM rslt_taskList";
     $condition   = "";
@@ -19,8 +22,8 @@ function getTasks($taskType, $userId, $limit, $timestamp) {
         case GETTASK_CREATEDBYUSER: {
             return db_query(
                 $queryPrefix . " WHERE CreatorID = ? ", 
-                [ $timestamp, $limit, $userId ],
-                'iii');    
+                [ $timestamp, $limit, $compareDirection, $userId ],
+                'iiii');    
         }
 
         case GETTASK_ALL: {
@@ -42,33 +45,38 @@ function getTasks($taskType, $userId, $limit, $timestamp) {
             $condition = " WHERE ExecutorID = ? ";
             return db_query(
                 $queryPrefix . $condition, 
-                [ $timestamp, $userId, $limit ],
-                'iii');
+                [ $timestamp, $limit, $compareDirection, $userId ],
+                'iiii');
         }
 
         case GETTASK_COMPLETEDBYUSER: {
             $condition = " WHERE ExecutorID = ? AND Status = 'Done' ";
             return db_query(
                 $queryPrefix . $condition, 
-                [ $timestamp, $userId, $limit ],
-                'iii');
+                [ $timestamp, $limit, $compareDirection, $userId ],
+                'iiii');
         }
 
         case GETTASK_UNCOMPLETEDBYUSER: {
             $condition = " WHERE ExecutorID = ? AND Status != 'Done' ";
             return db_query(
                 $queryPrefix . $condition, 
-                [ $timestamp, $userId, $limit ],
-                'iii');
+                [ $timestamp, $limit, $compareDirection, $userId ],
+                'iiii');
         }
 
         default: return null;
     }
 
+    $suffix = "";
+    if ($compareDirection === GETTASK_DIRECTION_NEW) {
+        $suffix = "ORDER BY created ASC";
+    }
+
     return db_query(
-        $queryPrefix . $condition, 
-        [ $timestamp, $limit ],
-        'ii');
+        $queryPrefix . $condition . $suffix, 
+        [ $timestamp, $limit, $compareDirection ],
+        'iii');
 }
 
 function createTask($creatorId, $description, $reward) {
@@ -92,4 +100,23 @@ function completeTask($userId, $taskid) {
                          $taskid,
                      ],
                      'ii');
+}
+
+function loadUsersForTasks($tasks) {
+    $users = [];
+    foreach ($tasks as $task) {
+        $users[$task["creatorId"]] = '';
+        if ($task["executorId"])
+            $users[$task["executorId"]] = '';
+    }
+
+    if (count($users)) {
+        $tempUsers = getUsers(array_keys($users));
+        $users = [];
+        foreach ($tempUsers as $user) {
+            $users[$user["userId"]] = $user;
+        }
+    }
+
+    return $users;
 }

@@ -1,7 +1,7 @@
 DROP PROCEDURE IF EXISTS getTasks;
 
 DELIMITER //
-CREATE PROCEDURE getTasks(timestamp INT8, `limit` INT)
+CREATE PROCEDURE getTasks(timestamp INT8, `limit` INT, compareDirection INT)
 BEGIN
 	DROP TABLE IF EXISTS tmp_temp; 
 	DROP TABLE IF EXISTS tmp_temp2; 
@@ -10,10 +10,10 @@ BEGIN
     CREATE TEMPORARY TABLE tmp_temp 
 	SELECT * 
 	FROM Tasks 
-	WHERE Created < timestamp
+	WHERE (compareDirection = 0 AND (Created < timestamp)) || (compareDirection != 0 AND (Created > timestamp))
 	ORDER BY Created DESC 
 	LIMIT `limit`; 
-	
+    
     SET @created = (SELECT MAX(Created) FROM tmp_temp); 
 	
     CREATE TEMPORARY TABLE tmp_temp2 

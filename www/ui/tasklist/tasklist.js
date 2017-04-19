@@ -11,10 +11,30 @@ fw.defineComponent(
     function (app, element, childs, tagedNodes, params) {
         "use strict";
 
-        var time = 0;
+        var newestTimestamp = null;
+        var oldestTimestamp = 0;
         var lastTask = null;
+
+        setInterval(function () {
+            api.getNewerTasks(params.taskStatus, newestTimestamp, 25, function (response) {
+                if (response.status === 200) {
+                    var data = response.responseJSON;
+                    for (var i = 0, len = data.tasks.length; i < len; i++) {
+                        var item = fw.createElement(app, "task-list-item", Object.assign({ users: data.users }, data.tasks[i]));
+
+                        newestTimestamp = data.tasks[i].created;
+
+                        if (tagedNodes.list[0].childNodes.length === 0)
+                            tagedNodes.list[0].appendChild(item);
+
+                        tagedNodes.list[0].insertBefore(item, tagedNodes.list[0].childNodes[0]);
+                    }
+                }
+            });
+        }, 17000);
+
         function loadTasks(cb) {
-            api.getTasks(params.taskStatus, time, 25, function (response) {
+            api.getTasks(params.taskStatus, oldestTimestamp, 25, function (response) {
                 var loaded = false;
                 if (response.status === 200) {
                     var data = response.responseJSON;
@@ -22,7 +42,10 @@ fw.defineComponent(
                     for (var i = 0, len = data.tasks.length; i < len; i++) {
                         var item = fw.createElement(app, "task-list-item", Object.assign({ users: data.users }, data.tasks[i]));
 
-                        time = data.tasks[i].created;
+                        oldestTimestamp = data.tasks[i].created;
+                        if (newestTimestamp === null)
+                            newestTimestamp = data.tasks[i].created;
+
                         tagedNodes.list[0].appendChild(item);
 
                         lastTask = item;
