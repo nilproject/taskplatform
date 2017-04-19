@@ -82,7 +82,7 @@ function App() {
                         if (r.response) {
                             self.vkUsersCache[self.user.vkUserId] = r.response[0];
                             for (var cb in self.vkUsersAwaiters[userId]) {
-                                cb(r.response[0]);
+                                self.vkUsersAwaiters[userId][cb](r.response[0]);
                             }
                         }
                     });
