@@ -15,8 +15,12 @@ fw.defineComponent(
         var oldestTimestamp = 0;
         var lastTask = null;
 
-        setInterval(function () {
-            api.getNewerTasks(params.taskStatus, newestTimestamp, 25, function (response) {
+        var updateInterval = setInterval(function () {
+            if (!element.isConnected) {
+                clearInterval(updateInterval);
+            }
+
+            api.getNewerTasks(params.taskStatus, newestTimestamp || 0, 25, function (response) {
                 if (response.status === 200) {
                     var data = response.responseJSON;
                     for (var i = 0, len = data.tasks.length; i < len; i++) {
