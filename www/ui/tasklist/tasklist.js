@@ -14,10 +14,13 @@ fw.defineComponent(
         var newestTimestamp = null;
         var oldestTimestamp = 0;
         var lastTask = null;
+        var updateInterval = setInterval(loadNewTasks, 17000);
+        app.on("newtask", loadNewTasks);
 
-        var updateInterval = setInterval(function () {
+        function loadNewTasks() {
             if (!element.isConnected) {
                 clearInterval(updateInterval);
+                app.unsubscribe("newtask", loadTasks);
             }
 
             api.getNewerTasks(params.taskStatus, newestTimestamp || 0, 25, function (response) {
@@ -35,7 +38,7 @@ fw.defineComponent(
                     }
                 }
             });
-        }, 17000);
+        }
 
         function loadTasks(cb) {
             api.getTasks(params.taskStatus, oldestTimestamp, 25, function (response) {

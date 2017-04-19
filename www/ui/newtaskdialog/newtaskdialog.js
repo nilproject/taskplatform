@@ -9,7 +9,9 @@
         }
 
         tagedNodes.submit[0].onclick = function () {
-            api.createTask(tagedNodes.text[0].value, tagedNodes.reward[0].value);
+            api.createTask(tagedNodes.text[0].value, tagedNodes.reward[0].value, function () {
+                app.fireEvent("newtask");
+            });
             close();
         }
 
