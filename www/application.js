@@ -8,9 +8,47 @@ function App() {
     VK.init({ apiId: 5985022 });
 
     var self = this;
-    self.vkUsersCache = {};
-    self.vkUsersAwaiters = {};
     self.user = {};
+
+    var vkUsersCache = {};
+    var vkUsersAwaiters = {};
+    var events = {};
+
+    this.on = on;
+    function on(event, handler) {
+        if (typeof handler !== "function")
+            return;
+
+        if (!(event in events))
+            events[event] = [];
+
+        events[event].push(handler);
+    }
+
+    this.unsubscribe = unsubscribe;
+    function unsubscribe(event, handler) {
+        if (typeof handler !== "function")
+            return;
+
+        if (!(event in events))
+            return;
+
+        events[event].splice(events[event].findIndex(handler), 1);
+    }
+
+    this.fireEvent = fireEvent;
+    function fireEvent(event) {
+        if (!(event in events))
+            return;
+
+        setTimeout(function () {
+            for (var cb in events[event]) {
+                try {
+                    events[event][cb]();
+                } catch (e) { }
+            }
+        });
+    }
 
     this.decodeHtml = decodeHtml;
     function decodeHtml(str) {
@@ -38,7 +76,7 @@ function App() {
                     },
                     function (r) {
                         if (r.response) {
-                            self.vkUsersCache[self.user.vkUserId] = r.response[0];
+                            vkUsersCache[self.user.vkUserId] = r.response[0];
                             self.user.avatarUrl = r.response[0].photo_100;
                         }
 
@@ -63,30 +101,36 @@ function App() {
 
     this.getVkUser = getVkUser;
     function getVkUser(userId, callback) {
-        if (self.vkUsersCache[userId]) {
-            callback && callback(self.vkUsersCache[userId]);
+        if (vkUsersCache[userId]) {
+            callback && callback(vkUsersCache[userId]);
         } else {
-            if (self.vkUsersAwaiters[userId]) {
-                callback && self.vkUsersAwaiters[userId].push(callback);
+            if (vkUsersAwaiters[userId]) {
+                callback && vkUsersAwaiters[userId].push(callback);
             } else {
                 if (callback)
-                    self.vkUsersAwaiters[userId] = [callback];
+                    vkUsersAwaiters[userId] = [callback];
 
                 VK.Api.call(
                     'users.get',
                     {
-                        user_ids: self.user.vkUserId,
+                        user_ids: userId,
                         fields: "photo_100"
                     },
                     function (r) {
                         if (r.response) {
-                            self.vkUsersCache[self.user.vkUserId] = r.response[0];
-                            for (var cb in self.vkUsersAwaiters[userId]) {
-                                self.vkUsersAwaiters[userId][cb](r.response[0]);
+                            vkUsersCache[userId] = r.response[0];
+                            for (var cb in vkUsersAwaiters[userId]) {
+                                try {
+                                    vkUsersAwaiters[userId][cb](r.response[0]);
+                                } catch (e) { }
                             }
+
+                            delete vkUsersAwaiters[userId];
                         }
                     });
             }
         }
     }
+
+    Object.seal(this);
 }
