@@ -25,7 +25,6 @@
         }
 
         tagedNodes.name[0].onchange = onChangeHandler;
-
         // HTML5
         tagedNodes.name[0].oninput = onChangeHandler;
 

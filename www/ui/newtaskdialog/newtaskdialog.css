@@ -43,3 +43,7 @@
         new-task-dialog .footer .reward {
             width: 100px;
         }
+
+    new-task-dialog .invalid {
+        outline: 1px solid #f77;
+    }
