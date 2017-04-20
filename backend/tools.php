@@ -16,7 +16,13 @@ function dieWithCode($code) {
 }
 
 function echoSuccess() {
+    header("Content-type: application/json");
     echo '{ "result" : "success" }';
+}
+
+function echoJson($object) {
+    header("Content-type: application/json");
+    echo json_encode($object);
 }
 
 function now(){

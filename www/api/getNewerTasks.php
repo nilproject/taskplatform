@@ -33,4 +33,4 @@ if ($tasks === null || isset($tasks['error']))
 
 $users = loadUsersForTasks($tasks);
 
-echo json_encode([ "tasks" => $tasks, "users" => $users ]);
+echoJson([ "tasks" => $tasks, "users" => $users ]);

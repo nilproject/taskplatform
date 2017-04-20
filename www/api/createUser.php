@@ -18,6 +18,6 @@ $result = createUser(
     urldecode($_GET['name']));
 
 if ($result)
-    echo json_encode($result);
+    echoJson($result);
 else
     echoSuccess();

@@ -12,4 +12,4 @@ $result = getUserInfo(intval($_COOKIE['userid']));
 if (!$result)
     dieWithCode(404);
 
-echo json_encode($result);
+echoJson($result);
