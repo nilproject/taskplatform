@@ -14,7 +14,7 @@ BEGIN
 	ORDER BY Created DESC 
 	LIMIT `limit`; 
     
-    SET @created = (SELECT MAX(Created) FROM tmp_temp); 
+    SET @created = (SELECT MIN(Created) FROM tmp_temp); 
 	
     CREATE TEMPORARY TABLE tmp_temp2 
 	SELECT *
@@ -23,10 +23,10 @@ BEGIN
     
     CREATE TEMPORARY TABLE rslt_taskList 
 	SELECT * 
-	FROM tmp_temp2  
+	FROM tmp_temp
+	WHERE created != @created 
 	UNION ALL 
 	SELECT * 
-    FROM tmp_temp
-	WHERE created != @created;
+    FROM tmp_temp2;
 END;
 //
