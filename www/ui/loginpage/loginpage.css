@@ -1,92 +1,89 @@
-﻿login-page {
+﻿login-page .backimg {
+    width: 100%;
+    opacity: 0;
+    visibility: collapse;
+    transition: opacity ease-in-out 1600ms 0ms, visibility linear 0ms 1600ms;
+    display: list-item;
+    position: absolute;
+    z-index: -1;
 }
 
-    login-page .backimg {
-        width: 100%;
-        opacity: 0;
-        visibility: collapse;
-        transition: opacity ease-in-out 1600ms 0ms, visibility linear 0ms 1600ms;
-        display: list-item;
-        position: absolute;
-        z-index: -1;
+    login-page .backimg:last-child {
+        position: inherit;
     }
 
-        login-page .backimg:last-child {
-            position: inherit;
-        }
-
-        login-page .backimg.current {
-            opacity: 1;
-            visibility: visible;
-            transition: opacity ease-in-out 1600ms 0ms, visibility linear 0ms 0ms;
-        }
-
-    login-page .img-block {
-        margin-top: 50px;
+    login-page .backimg.current {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity ease-in-out 1600ms 0ms, visibility linear 0ms 0ms;
     }
 
-    login-page .back-top {
-        height: 34px;
-        width: 100%;
-        box-shadow: #333 0 20px 40px -10px;
-        position: absolute;
-        margin-top: -34px;
+login-page .img-block {
+    margin-top: 50px;
+}
+
+login-page .back-top {
+    height: 34px;
+    width: 100%;
+    box-shadow: #333 0 20px 40px -10px;
+    position: absolute;
+    margin-top: -34px;
+}
+
+login-page .back-bottom {
+    height: 34px;
+    width: 100%;
+    box-shadow: #333 0 -20px 40px -10px;
+    position: absolute;
+}
+
+login-page .lgn-block-layer {
+    position: absolute;
+    top: 0;
+    vertical-align: bottom;
+    width: 100%;
+    text-align: center;
+}
+
+login-page .lgn-block {
+    width: 200px;
+    padding: 45px;
+    display: inline-block;
+    margin-top: 7%;
+    overflow: hidden;
+    background: rgba(255,255,255,0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 7px #777;
+}
+
+login-page .title {
+    text-align: center;
+    font-size: 3.4em;
+    margin-top: 3%;
+    cursor: default;
+}
+
+login-page .or-delim {
+    width: 100px;
+    margin: 15px auto;
+    text-align: center;
+}
+
+login-page .auth-blk {
+    width: 200px;
+    margin: 15px auto;
+    text-align: center;
+}
+
+    login-page .auth-blk input {
+        width: 150px;
     }
 
-    login-page .back-bottom {
-        height: 34px;
-        width: 100%;
-        box-shadow: #333 0 -20px 40px -10px;
-        position: absolute;
-    }
+login-page .auth-fldttl {
+    margin: 5px;
+}
 
-    login-page .lgn-block-layer {
-        position: absolute;
-        top: 0;
-        vertical-align: bottom;
-        width: 100%;
-        text-align: center;
-    }
-
-    login-page .lgn-block {
-        width: 200px;
-        padding: 45px;
-        display: inline-block;
-        margin-top: 7%;
-        overflow: hidden;
-        background: rgba(255,255,255,0.9);
-        border-radius: 10px;
-        box-shadow: 0 0 7px #777;
-    }
-
-    login-page .title {
-        text-align: center;
-        font-size: 3.4em;
-        margin-top: 3%;
-        cursor: default;
-    }
-
-    login-page .or-delim {
-        width: 100px;
-        margin: 15px auto;
-        text-align: center;
-    }
-
-    login-page .auth-blk {
-        width: 200px;
-        margin: 15px auto;
-        text-align: center;
-    }
-
-        login-page .auth-blk input {
-            width: 150px;
-        }
-
-    login-page .auth-fldttl {
-        margin: 5px;
-    }
-
-    login-page .enter-btn {
-        margin: 0 auto;
-        display: block;
-    }
+login-page .enter-btn {
+    margin: 0 auto;
+    display: block;
+}

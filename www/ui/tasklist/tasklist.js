@@ -14,7 +14,7 @@ fw.defineComponent(
         var newestTimestamp = null;
         var oldestTimestamp = 0;
         var lastTask = null;
-        var updateInterval = setInterval(loadNewTasks, 17000);
+        var updateInterval = setInterval(loadNewTasks, 12500);
         app.on("newtask", loadNewTasks);
 
         function loadNewTasks() {
