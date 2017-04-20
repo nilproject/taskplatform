@@ -13,6 +13,7 @@ if (!is_numeric($_POST["reward"]))
 $reward = floatval($_POST["reward"]);
 
 checkAuthentication();
+updateUserAuthInfo($_COOKIE['userid']);
 checkRole($_COOKIE['userid'], ROLE_CUSTOMER);
 
 $result = createTask($_COOKIE['userid'], $_POST["description"], $reward);

@@ -18,3 +18,7 @@ function dieWithCode($code) {
 function echoSuccess() {
     echo '{ "result" : "success" }';
 }
+
+function now(){
+    return intval(microtime(true) * 1000);
+}

@@ -9,6 +9,7 @@ if (!$_GET['taskid'] || !intval($_GET['taskid']))
     dieWithCode(400);
 
 checkAuthentication();
+updateUserAuthInfo($_COOKIE['userid']);
 checkRole($_COOKIE['userid'], ROLE_EXECUTOR);
 
 $result = completeTask($_COOKIE['userid'], $_GET['taskid']);

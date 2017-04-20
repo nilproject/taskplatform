@@ -7,6 +7,7 @@ include_once "../../backend/db/tasks.php";
 include_once "../../backend/db/user.php";
 
 checkAuthentication();
+updateUserAuthInfo($_COOKIE['userid']);
 
 $taskType = GETTASK_ALL;
 switch ($_GET["type"]) {

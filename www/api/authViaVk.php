@@ -4,22 +4,20 @@ include_once "../../backend/db/user.php";
 include_once "../../backend/tools.php";
 include_once "../../backend/security.php";
 
-if (!$_GET['userid'] || !intval($_GET['userid']))
+
+if (!is_numeric($_GET['userid']))
     dieWithCode(400);
 
-if (!$_GET['hash'])
+if (!is_string($_GET['hash']))
     dieWithCode(400);
 
 checkVkAuthentication($_GET['userid'], $_GET['hash']);
 
-$userId = getUserIdByVkId(intval($_GET['userid']));
+$userIdResponse = getUserIdByVkId(intval($_GET['userid']));
 
-if (!$userId) 
+if (!$userIdResponse) 
     dieWithCode(403);
 
-$hash = makeAuthHash($userId['userId']);
-
-setcookie("userid", $userId['userId'], 0, "", $_SERVER["HTTP_REFERER"], false, true);
-setcookie("hash", $hash, 0, "", $_SERVER["HTTP_REFERER"], false, true);
+updateUserAuthInfo($userIdResponse['userId']);
 
 echoSuccess();

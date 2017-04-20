@@ -4,19 +4,31 @@ include_once "tools.php";
 include_once "../../backend/db/user.php";
 
 function checkAuthentication() {
-    $secKey = $_SERVER['SEC_KEY'];
     $userId = $_COOKIE['userid'];
     $hash   = $_COOKIE['hash'];
 
-    if ($hash !== hash("sha256", $userId . $secKey)) {
+    if ($hash !== makeAuthHash($userId)
+        && $hash !== makeAuthHash($userId, true)) {
         dieWithCode(401);
     }
 }
 
-function makeAuthHash($userId) {
-    $secKey = $_SERVER['SEC_KEY'];
+function updateUserAuthInfo($userId){
+    $hash = makeAuthHash($userId);
 
-    return hash("sha256", $userId . $secKey);
+    if (!isset($_COOKIE["hash"]) || $_COOKIE["hash"] !== $hash) {
+        setcookie("userid", $userId, 0, "", parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST), false, true);
+        setcookie("hash", $hash, 0, "", parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST), false, true);
+    }
+}
+
+function makeAuthHash($userId, $prev) {
+    $secKey = $_SERVER['SEC_KEY'];
+    $time = intval(now() / (5 * 60 * 1000));
+    if ($prev)
+        $time--;
+
+    return hash("sha256", $userId . $secKey . $time);
 }
 
 function makePassHash($login, $pass) {

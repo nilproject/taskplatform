@@ -86,7 +86,7 @@ function createTask($creatorId, $description, $reward) {
                          $creatorId,
                          $reward,
                          $description,
-                         intval(microtime(true) * 1000)
+                         now()
                      ], 
                      'idsi');
 }
