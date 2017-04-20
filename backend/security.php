@@ -17,9 +17,16 @@ function updateUserAuthInfo($userId){
     $hash = makeAuthHash($userId);
 
     if (!isset($_COOKIE["hash"]) || $_COOKIE["hash"] !== $hash) {
-        setcookie("userid", $userId, 0, "", parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST), false, true);
-        setcookie("hash", $hash, 0, "", parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST), false, true);
+        $host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+        setcookie("userid", $userId, 0, "/", $host, false, true);
+        setcookie("hash", $hash, 0, "/", $host, false, true);
     }
+}
+
+function removeCookie() {
+    $host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+    setcookie("userid", null, 0, "/", $host, false, true);
+    setcookie("hash", null, 0, "/", $host, false, true);
 }
 
 function makeAuthHash($userId, $prev) {

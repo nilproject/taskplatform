@@ -11,7 +11,6 @@ function dieWithCode($code) {
         case 500: $codeDescription .= ' Internal Rrror'; break;
     }
 
-
     header('HTTP/1.1 ' . $codeDescription, true, $code); die($code);
 }
 
