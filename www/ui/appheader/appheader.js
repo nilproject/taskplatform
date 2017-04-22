@@ -21,6 +21,16 @@
 
         tagedNodes.avatar[0].src = app.user.avatarUrl;
         tagedNodes.name[0].innerText = app.user.name;
+        tagedNodes.money[0].innerText = app.user.cash;
+
+        app.on(
+            app.events.cashUpdated,
+            function () {
+                app.updateCash(function () {
+                    tagedNodes.money[0].innerText = app.user.cash;
+                });
+            },
+            element)
 
         if (app.user.allowCreateTasks) {
             tagedNodes.newTask[0].onclick = function () {

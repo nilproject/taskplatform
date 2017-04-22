@@ -79,8 +79,9 @@ function getTasks($taskType, $userId, $limit, $timestamp, $compareDirection) {
         'iii');
 }
 
-function createTask($creatorId, $description, $reward) {
-    return db_query("INSERT INTO Tasks (CreatorID, Reward, Description, Created)
+function createTask($creatorId, $description, $reward, &$taskId) {
+    $taskIds = [];
+    $result = db_query("INSERT INTO Tasks (CreatorID, Reward, Description, Created)
                      VALUES (?, ?, ?, ?)",
                      [
                          $creatorId,
@@ -88,10 +89,26 @@ function createTask($creatorId, $description, $reward) {
                          $description,
                          now()
                      ], 
-                     'idsi');
+                     'idsi',
+                     "GO;",
+                     $taskIds);
+
+    if (array_key_exists(0, $taskIds))
+        $taskId = $taskIds[0];
+    
+    return $result;
 }
 
-function completeTask($userId, $taskid) {
+function deleteTask($taskId) {
+    return db_query("DELETE FROM Tasks
+                    WHERE TaskID = ?",
+                    [
+                        $taskId
+                    ], 
+                    'idsi');
+}
+
+function completeTask($taskid, $userId) {
     return db_query("UPDATE Tasks
                      SET ExecutorID = ?, Status = 'Done'
                      WHERE TaskID = ?",

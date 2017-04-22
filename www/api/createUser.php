@@ -13,7 +13,7 @@ if (!$_GET['hash'])
 checkVkAuthentication($_GET['vkuserid'], $_GET['hash']);
 
 $result = createUser(
-    $_GET['vkuserid'],
+    intval($_GET['vkuserid']),
     urldecode($_GET['role']), 
     urldecode($_GET['name']));
 

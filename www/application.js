@@ -14,15 +14,21 @@ function App() {
     var vkUsersAwaiters = {};
     var events = {};
 
+    this.events = {
+        newtask: "newtask",
+        cashUpdated: "cashUpdated"
+    };
+    Object.seal(this.events);
+
     this.on = on;
-    function on(event, handler) {
+    function on(event, handler, node) {
         if (typeof handler !== "function")
             return;
 
         if (!(event in events))
             events[event] = [];
 
-        events[event].push(handler);
+        events[event].push({ handler: handler, node: node });
     }
 
     this.unsubscribe = unsubscribe;
@@ -33,7 +39,7 @@ function App() {
         if (!(event in events))
             return;
 
-        events[event].splice(events[event].findIndex(handler), 1);
+        events[event].splice(events[event].findIndex(x => x.handler == handler), 1);
     }
 
     this.fireEvent = fireEvent;
@@ -42,10 +48,46 @@ function App() {
             return;
 
         setTimeout(function () {
-            for (var cb in events[event]) {
+            var needRebuild = false;
+            for (var s in events[event]) {
+                var subscriber = events[event][s];
+
+                if (!subscriber)
+                    continue;
+
+                if (subscriber.node) {
+                    var isConnected = true;
+                    if ("isConnected" in subscriber.node) {
+                        isConnected = subscriber.node.isConnected;
+                    } else {
+                        var parent = subscriber.node.parentNode;
+                        while (parent && parent != document) {
+                            parent = parent.parentNode;
+                        }
+
+                        isConnected = !!parent;
+                    }
+
+                    if (!isConnected) {
+                        events[event][s] = null;
+                        needRebuild = true;
+                        continue;
+                    }
+                }
+
                 try {
-                    events[event][cb]();
+                    events[event][s].handler();
                 } catch (e) { }
+            }
+
+            if (needRebuild) {
+                var newSbscrbrs = [];
+                for (var s in events[event]) {
+                    if (events[event][s]) {
+                        newSbscrbrs.push(events[event][s]);
+                    }
+                }
+                events[event] = newSbscrbrs;
             }
         });
     }
@@ -56,6 +98,16 @@ function App() {
             return String.fromCharCode(dec);
         }));
     };
+
+    this.updateCash = updateCash;
+    function updateCash(callback) {
+        api.getUserInfo(function (response) {
+            if (response.status === 200) {
+                self.user.cash = response.responseJSON.cash;
+                callback && callback();
+            }
+        });
+    }
 
     this.loadUserInfo = loadUserInfo;
     function loadUserInfo(callback) {

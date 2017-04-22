@@ -23,10 +23,15 @@
             if (!valid)
                 return;
 
-            api.createTask(tagedNodes.text[0].value, tagedNodes.reward[0].value, function () {
-                app.fireEvent("newtask");
+            api.createTask(tagedNodes.text[0].value, tagedNodes.reward[0].value, function (response) {
+                if (response.status == 200) {
+                    app.fireEvent(app.events.newtask);
+                    app.fireEvent(app.events.cashUpdated);
+                    close();
+                } else if (response.status == 402) {
+                    $(tagedNodes.reward[0]).addClass("invalid");
+                }
             });
-            close();
         }
 
         function close() {

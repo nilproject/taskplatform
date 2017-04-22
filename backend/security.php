@@ -29,7 +29,7 @@ function removeCookie() {
     setcookie("hash", null, 0, "/", $host, false, true);
 }
 
-function makeAuthHash($userId, $prev) {
+function makeAuthHash($userId, $prev = false) {
     $secKey = $_SERVER['SEC_KEY'];
     $time = intval(now() / (5 * 60 * 1000));
     if ($prev)

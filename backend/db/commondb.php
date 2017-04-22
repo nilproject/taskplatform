@@ -1,6 +1,6 @@
 <?php
 
-function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;") {
+function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;", &$insertedIds = null) {
     $db = mysqli_connect($_SERVER["DB_HOST"], $_SERVER["DB_LOGIN"], $_SERVER["DB_PASS"], $_SERVER["DB_NAME"])
         or die('dberror: ' . mysql_error());    
 
@@ -33,11 +33,10 @@ function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;") {
 
             call_user_func_array("mysqli_stmt_bind_param", $prms);
 
-            mysqli_stmt_execute($preparedQuery);
+            $success = mysqli_stmt_execute($preparedQuery);
             
             $queryResult = mysqli_stmt_get_result($preparedQuery);        
             $errorList = mysqli_error_list($db);
-            $success = true;
             $errorMessage = "";
             foreach ($errorList as $channel => $errors) {
                 foreach ($errors as $key => $error) {
@@ -52,8 +51,17 @@ function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;") {
             while ($line = mysqli_fetch_assoc($queryResult)) {
                 $result[] = $line;
             }
+
+            if (is_array($insertedIds)) {
+                $lastInsertId = mysqli_insert_id($db);
+                if ($lastInsertId !== 0) {
+                    $insertedIds[] = $lastInsertId;
+                }
+            }
+
             mysqli_free_result($queryResult);
         }
+
         return $result;
     } finally {
         mysqli_close($db);

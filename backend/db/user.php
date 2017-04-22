@@ -4,7 +4,7 @@ include_once "commondb.php";
 include_once "../security.php";
 
 function getUserInfo($userId) {
-    return db_query('SELECT userId, vkUserId, `name`, role FROM Users 
+    return db_query('SELECT userId, vkUserId, `name`, role, cash FROM Users 
                      WHERE UserID = ?',
                      [
                          $userId
@@ -20,11 +20,11 @@ function getUsers($userIds) {
         if ($ids !== "")
             $ids .= ",";
 
-        $ids .= $value;
+        $ids .= intval($value);
     }
 
-    return db_query('SELECT userId, vkUserId, `name`, role FROM Users 
-                     WHERE UserID IN (' . $ids . ")");
+    return db_query('SELECT userId, vkUserId, `name`, role, cash FROM Users 
+                     WHERE UserID IN (' . $ids . ")", [], "");
 }
 
 function getUserRole($userId) {
@@ -46,14 +46,42 @@ function getUserIdByVkId($vkUserId) {
 }
 
 function createUser($vkUserId, $role, $name) {
-    $passHash = makePassHash($login, $pass);
-
-    return db_query('INSERT INTO Users (VkUserID, `Name`, Role) 
-                     VALUES (?, ?, ?)',
+    return db_query('INSERT INTO Users (VkUserID, `Name`, Role, Cash) 
+                     VALUES (?, ?, ?, 0)',
                      [
                          $vkUserId,
                          $name,
                          $role
                      ],
                      'iss');
+}
+
+function withdrawFunds($userId, $amount) {
+    if (!is_numeric($amount) || doubleval($amount) < 0) {
+        die("Incorrect amount");
+    }
+
+    return db_query('UPDATE Users 
+                     SET Cash = Cash - ? 
+                     WHERE UserID = ?',
+                     [
+                         $amount,
+                         $userId
+                     ],
+                     'si');
+}
+
+function enrollFunds($userId, $amount) {
+    if (!is_numeric($amount) || doubleval($amount) < 0) {
+        die("Incorrect amount");
+    }
+
+    return db_query('UPDATE Users 
+                     SET Cash = Cash + ? 
+                     WHERE UserID = ?',
+                     [
+                         $amount,
+                         $userId
+                     ],
+                     'si');
 }

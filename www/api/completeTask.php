@@ -5,14 +5,14 @@ include_once "../../backend/security.php";
 include_once "../../backend/db/constants.php";
 include_once "../../backend/db/tasks.php";
 
-if (!$_GET['taskid'] || !intval($_GET['taskid']))
+if (!is_numeric($_GET['taskid']))
     dieWithCode(400);
 
 checkAuthentication();
 updateUserAuthInfo($_COOKIE['userid']);
 checkRole($_COOKIE['userid'], ROLE_EXECUTOR);
 
-$result = completeTask($_COOKIE['userid'], $_GET['taskid']);
+$result = completeTask(intval($_GET['taskid']), intval($_COOKIE['userid']));
 if ($result === null || $result["error"])
     dieWithCode(500);
 
