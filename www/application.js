@@ -39,7 +39,7 @@ function App() {
         if (!(event in events))
             return;
 
-        events[event].splice(events[event].findIndex(x => x.handler == handler), 1);
+        events[event].splice(events[event].findIndex(function (x) { return x.handler === handler; }), 1);
     }
 
     this.fireEvent = fireEvent;
