@@ -9,15 +9,16 @@ const TRANSACTION_DIRECTION_FromUserToSystem = 'FromUserToSystem';
 const TRANSACTION_DIRECTION_FromTaskToSystem = 'FromTaskToSystem';
 const TRANSACTION_DIRECTION_FromSystemToUser = 'FromSystemToUser';
 
-function createTransaction($direction, $sourceId, $targetId, $amount) {
+function createTransaction($direction, $sourceId, $targetId, $amount, $part = 1.0) {
     return db_query("INSERT INTO Transactions (Direction, SourceID, TargetID, Amount, Created)
-                     VALUES (?, ?, ?, ?, ?)",
+                     VALUES (?, ?, ?, ? * ?, ?)",
                      [
                          $direction,
                          $sourceId, 
                          $targetId, 
                          $amount,
+                         $part,
                          now()
                      ], 
-                     'siidi');
+                     'siiddi');
 }

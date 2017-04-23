@@ -1,16 +1,7 @@
 <?php
 
 include_once "commondb.php";
-
-const GETTASK_ALL = 0;
-const GETTASK_CREATEDBYUSER = 1;
-const GETTASK_UNCOMPLETED = 2;
-const GETTASK_COMPLETED = 3;
-const GETTASK_ASSIGNEDTOUSER = 4;
-const GETTASK_COMPLETEDBYUSER = 5;
-
-const GETTASK_DIRECTION_OLD = 0;
-const GETTASK_DIRECTION_NEW = 1;
+include_once "constants.php";
 
 function getTasks($taskType, $userId, $limit, $timestamp, $compareDirection) {
     $queryPrefix = "CALL getTasks(?, ?, ?); 
