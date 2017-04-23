@@ -18,6 +18,7 @@ $result = createUser(
     intval($_GET['vkuserid']),
     urldecode($_GET['role']), 
     urldecode($_GET['name']),
+    true, // Для тестирования удобно всем раздать права администратора
     $userId);
 
 checkResponse($result);

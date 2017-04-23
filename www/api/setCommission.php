@@ -23,6 +23,10 @@ if ($_POST["token"] !== $token) {
     dieWithCode(403);
 }
 
+if (!isAdmin($_COOKIE['userid'])) {
+    dieWithCode(403);
+}
+
 $response = setSetting('Commission', $newCommission);
 checkResponse($response);
 

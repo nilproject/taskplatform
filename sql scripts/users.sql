@@ -10,6 +10,7 @@ CREATE TABLE Users (
               'Executor',
               'System') NOT NULL,
 	Cash DECIMAL(16,4) NOT NULL,
+    Admin INT1 NOT NULL,
     PRIMARY KEY (UserID), UNIQUE KEY(VkUserID)
 )  ENGINE=INNODB;
 
@@ -26,8 +27,8 @@ BEGIN
 END;
 //
 
-INSERT INTO Users (VkUserID, `Name`, Role, Cash) 
-VALUES (0, 'system', 'System', 0);
+INSERT INTO Users (VkUserID, `Name`, Role, Cash, Admin) 
+VALUES (0, 'system', 'System', 0, 0);
 
 UPDATE Users SET Cash = Cash + 100.0 WHERE UserID = 1;
 UPDATE Users SET Cash = Cash - 100.0 WHERE UserID = 1;

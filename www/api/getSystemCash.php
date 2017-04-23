@@ -13,6 +13,10 @@ if ($_GET["token"] !== $token) {
     dieWithCode(403);
 }
 
+if (!isAdmin($_COOKIE['userid'])) {
+    dieWithCode(403);
+}
+
 $cash = getUserInfo(USER_SYSTEM)['cash'];
 
 echoJson([ "cash" => $cash ]);

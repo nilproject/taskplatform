@@ -36,7 +36,8 @@ function getUserRole($userId) {
 }
 
 function getUserIdByVkId($vkUserId) {
-    return db_query('SELECT userId FROM Users 
+    return db_query('SELECT userId
+                     FROM Users 
                      WHERE VkUserID = ?',
                      [
                          $vkUserId
@@ -44,16 +45,27 @@ function getUserIdByVkId($vkUserId) {
                      'i')[0];
 }
 
-function createUser($vkUserId, $role, $name, &$userId) {
+function isAdmin($userId) {
+    return db_query('SELECT Admin
+                     FROM Users 
+                     WHERE UserID = ?',
+                     [
+                         $userId
+                     ],
+                     'i')[0]['Admin'] === 1;
+}
+
+function createUser($vkUserId, $role, $name, $isAdmin, &$userId) {
     $userIds = [];
-    $result = db_query('INSERT INTO Users (VkUserID, `Name`, Role, Cash) 
-                     VALUES (?, ?, ?, 0)',
+    $result = db_query('INSERT INTO Users (VkUserID, `Name`, Role, Cash, Admin) 
+                     VALUES (?, ?, ?, 0, ?)',
                      [
                          $vkUserId,
                          $name,
-                         $role
+                         $role,
+                         $isAdmin ? 1 : 0
                      ],
-                     'iss',
+                     'issi',
                      "GO;",
                      $userIds);
     

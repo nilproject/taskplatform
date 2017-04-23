@@ -15,6 +15,10 @@ if ($_GET["token"] !== $token) {
     dieWithCode(403);
 }
 
+if (!isAdmin($_COOKIE['userid'])) {
+    dieWithCode(403);
+}
+
 $timestamp = intval($_GET["time"]);
 if ($timestamp === 0)
     $timestamp = PHP_INT_MAX;
