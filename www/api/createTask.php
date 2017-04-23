@@ -21,7 +21,7 @@ updateUserAuthInfo($userId);
 checkRole($userId, ROLE_CUSTOMER);
 
 $response = withdrawFunds($userId, $reward);
-checkResponse($response);
+checkResponse($response, 402);
 
 try {
     $taskId = 0;

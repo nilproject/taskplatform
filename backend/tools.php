@@ -30,7 +30,7 @@ function now(){
     return intval(microtime(true) * 1000);
 }
 
-function checkResponse($response, $hideErrorMessage = false) {
+function checkResponse($response, $errorCode = 400, $hideErrorMessage = false) {
     if ($response === null)
         dieWithCode(500);
 
@@ -41,6 +41,6 @@ function checkResponse($response, $hideErrorMessage = false) {
             echoJson($response["error"]);
         }
         
-        dieWithCode(402);
+        dieWithCode($errorCode);
     }
 }

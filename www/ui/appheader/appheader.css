@@ -71,6 +71,7 @@
         overflow: hidden;
         visibility: collapse;
         transition: visibility linear 200ms 200ms;
+        white-space: normal;
     }
 
     app-header .user-block:hover .user-menu {
@@ -97,8 +98,8 @@
     }
 
     app-header .user-menu li {
-        padding-left: 16px;
-        height: 37px;
+        padding: 0.5em 16px 0.9em;
+        line-height: 1.5em;
     }
 
         app-header .user-menu li:first-child {
@@ -108,7 +109,7 @@
             font-size: 0.9em;
             color: #888;
             min-height: 2em;
-            padding-top: 0.5em;
+            padding: 0.5em 16px 0;
         }
 
         app-header .user-menu li:not(:first-child):hover {

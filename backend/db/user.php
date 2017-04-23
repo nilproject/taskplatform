@@ -1,7 +1,6 @@
 <?php
 
 include_once "commondb.php";
-include_once "../security.php";
 
 function getUserInfo($userId) {
     return db_query('SELECT userId, vkUserId, `name`, role, cash FROM Users 
@@ -45,15 +44,23 @@ function getUserIdByVkId($vkUserId) {
                      'i')[0];
 }
 
-function createUser($vkUserId, $role, $name) {
-    return db_query('INSERT INTO Users (VkUserID, `Name`, Role, Cash) 
+function createUser($vkUserId, $role, $name, &$userId) {
+    $userIds = [];
+    $result = db_query('INSERT INTO Users (VkUserID, `Name`, Role, Cash) 
                      VALUES (?, ?, ?, 0)',
                      [
                          $vkUserId,
                          $name,
                          $role
                      ],
-                     'iss');
+                     'iss',
+                     "GO;",
+                     $userIds);
+    
+    if (array_key_exists(0, $userIds))
+        $userId = $userIds[0];
+
+    return $result;
 }
 
 function withdrawFunds($userId, $amount) {
@@ -84,4 +91,13 @@ function enrollFunds($userId, $amount) {
                          $userId
                      ],
                      'si');
+}
+
+function deleteUser($userId) {
+    return db_query("DELETE FROM Users 
+                     WHERE UserID = ?",
+                     [
+                         $userId
+                     ],
+                     'i');
 }

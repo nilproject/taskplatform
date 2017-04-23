@@ -65,5 +65,14 @@ var api = {
             complete: callback,
             dataType: "json"
         });
+    },
+
+    cancelRegistration: function (callback) {
+        $.ajax({
+            url: "/api/cancelRegistration.php",
+            method: "DELETE",
+            complete: callback,
+            dataType: "json"
+        });
     }
 };

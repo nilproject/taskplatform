@@ -42,12 +42,16 @@
         function close() {
             tagedNodes.reward[0].value = "";
             tagedNodes.text[0].value = "";
+            $(tagedNodes.text[0]).removeClass("invalid");
+            $(tagedNodes.reward[0]).removeClass("invalid");
             $(element).addClass("hidden");
         }
 
         function open() {
             tagedNodes.reward[0].value = "";
             tagedNodes.text[0].value = "";
+            $(tagedNodes.text[0]).removeClass("invalid");
+            $(tagedNodes.reward[0]).removeClass("invalid");
             $(element).removeClass("hidden");
         }
 

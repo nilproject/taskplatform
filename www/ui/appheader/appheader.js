@@ -51,5 +51,11 @@
         } else {
             tagedNodes.enroll[0].parentNode.removeChild(tagedNodes.enroll[0]);
         }
+
+        tagedNodes.cancelRegistration[0].onclick = function () {
+            api.cancelRegistration(function () {
+                window.location.href = "/";
+            });
+        }
     }
 );

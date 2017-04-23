@@ -13,7 +13,7 @@ CREATE TABLE Tasks (
                'Done') NOT NULL,
     Created INT8 NOT NULL,
     PRIMARY KEY (TaskID)
-)  ENGINE=INNODB;
+)  ENGINE = INNODB;
 
 create index IX_Tasks_CreatorID on Tasks(CreatorID);
 create index IX_Tasks_ExecutorID on Tasks(ExecutorID);

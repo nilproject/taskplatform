@@ -1,8 +1,9 @@
 <?php
 
-include_once "../../backend/db/user.php";
 include_once "../../backend/tools.php";
 include_once "../../backend/security.php";
+include_once "../../backend/db/user.php";
+include_once "../../backend/db/transactions.php";
 
 if (!is_numeric($_GET['vkuserid']))
     dieWithCode(400);
@@ -12,12 +13,12 @@ if (!$_GET['hash'])
 
 checkVkAuthentication($_GET['vkuserid'], $_GET['hash']);
 
+$userId = 0;
 $result = createUser(
     intval($_GET['vkuserid']),
     urldecode($_GET['role']), 
-    urldecode($_GET['name']));
+    urldecode($_GET['name']),
+    $userId);
 
-if ($result)
-    echoJson($result);
-else
-    echoSuccess();
+checkResponse($result);
+echoSuccess();

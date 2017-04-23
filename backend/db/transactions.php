@@ -22,3 +22,17 @@ function createTransaction($direction, $sourceId, $targetId, $amount, $part = 1.
                      ], 
                      'siiddi');
 }
+
+function computeUserCash($userId) {
+    return db_query("SELECT SUM(Amount) AS cash
+                     FROM Transactions 
+                     WHERE Direction IN ( 
+                             'FromTaskToUser', 
+                             'FromUserToUser',
+                             'FromSystemToUser')
+                     AND TargetID = ?",
+                     [
+                         $userId
+                     ], 
+                     'i')[0];
+}
