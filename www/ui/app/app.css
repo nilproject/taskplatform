@@ -62,3 +62,7 @@ button {
     white-space: nowrap;
     padding: 10px;
 }
+
+.invalid {
+    outline: 1px solid #f77;
+}

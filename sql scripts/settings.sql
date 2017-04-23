@@ -10,3 +10,4 @@ CREATE TABLE Settings (
 CREATE INDEX IX_Settings_Name on Settings(Name);
 
 INSERT INTO Settings (Name, Value) VALUES ('Commission', '0.1');
+INSERT INTO Settings (Name, Value) VALUES ('SystemToken', '78545F88A1A25E7F9457C3207FD820B7FFC781FD55CA69BDF0C8205E8AB5A87F');

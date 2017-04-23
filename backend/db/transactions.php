@@ -2,12 +2,16 @@
 
 include_once "commondb.php";
 
-const TRANSACTION_DIRECTION_FromUserToTask = 'FromUserToTask';
-const TRANSACTION_DIRECTION_FromTaskToUser = 'FromTaskToUser';
-const TRANSACTION_DIRECTION_FromUserToUser = 'FromUserToUser';
-const TRANSACTION_DIRECTION_FromUserToSystem = 'FromUserToSystem';
-const TRANSACTION_DIRECTION_FromTaskToSystem = 'FromTaskToSystem';
-const TRANSACTION_DIRECTION_FromSystemToUser = 'FromSystemToUser';
+function getTransactions($limit, $timestamp, $compareDirection) {
+    $query = "CALL getTransactions(?, ?, ?); 
+              GO;
+              SELECT transactionID, direction, sourceID, targetID, amount, created FROM rslt_getTransactions";
+ 
+    return db_query(
+            $query, 
+            [ $timestamp, $limit, $compareDirection ],
+            'iii');
+}
 
 function createTransaction($direction, $sourceId, $targetId, $amount, $part = 1.0) {
     return db_query("INSERT INTO Transactions (Direction, SourceID, TargetID, Amount, Created)

@@ -9,10 +9,6 @@
         text-align: left;
     }
 
-    step1 .invalid {
-        outline: 1px solid #f77;
-    }
-
     step1 .field-title {
         display: inline-block;
         width: 130px;

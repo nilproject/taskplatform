@@ -11,7 +11,7 @@
         tagedNodes.submit[0].onclick = function () {
             var valid = true;
             if (tagedNodes.amount[0].value.length === 0
-                || isNaN(Number(tagedNodes.amount[0].value))
+                || isNaN(tagedNodes.amount[0].value)
                 || tagedNodes.amount[0].value.length >= 7) {
                 $(tagedNodes.amount[0]).addClass("invalid");
                 valid = false;

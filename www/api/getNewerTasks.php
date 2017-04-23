@@ -26,7 +26,7 @@ $limit = intval($_GET["limit"]);
 if ($limit === 0)
     $limit = 25;
 
-$tasks = getTasks($taskType, intval($_COOKIE["userid"]), $limit, $timestamp, GETTASK_DIRECTION_NEW);
+$tasks = getTasks($taskType, intval($_COOKIE["userid"]), $limit, $timestamp, DIRECTION_NEW);
 
 if ($tasks === null || isset($tasks['error']))
     dieWithCode(500);

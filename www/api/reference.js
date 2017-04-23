@@ -74,5 +74,47 @@ var api = {
             complete: callback,
             dataType: "json"
         });
+    },
+
+    getCommission: function (callback) {
+        $.ajax({
+            url: "/api/getCommission.php",
+            complete: callback,
+            dataType: "json"
+        });
+    },
+
+    setCommission: function (commission, token, callback) {
+        $.ajax({
+            url: "/api/setCommission.php",
+            method: "POST",
+            data: "commission=" + escape(commission) + "&token=" + escape(token),
+            complete: callback,
+            dataType: "json"
+        });
+    },
+
+    getSystemCash: function (token, callback) {
+        $.ajax({
+            url: "/api/getSystemCash.php?token=" + escape(token),
+            complete: callback,
+            dataType: "json"
+        });
+    },
+
+    getTransactions: function (timeoffset, limit, token, callback) {
+        $.ajax({
+            url: "/api/getTransactions.php?time=" + escape(timeoffset) + "&limit=" + escape(limit) + "&token=" + escape(token),
+            complete: callback,
+            dataType: "json"
+        });
+    },
+
+    getNewerTransactions: function (timeoffset, limit, token, callback) {
+        $.ajax({
+            url: "/api/getNewerTransactions.php?time=" + escape(timeoffset) + "&limit=" + escape(limit) + "&token=" + escape(token),
+            complete: callback,
+            dataType: "json"
+        });
     }
 };

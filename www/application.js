@@ -185,5 +185,20 @@ function App() {
         }
     }
 
+    this.getQueryParams = getQueryParams;
+    function getQueryParams() {
+        var result = {};
+        var prmsRegExp = /[?&]([^=]*)=([^&]*)/g;
+        for (; ;) {
+            var queryPrm = prmsRegExp.exec(window.location.href);
+            if (!queryPrm)
+                break;
+
+            result[queryPrm[1]] = queryPrm[2];
+        }
+
+        return result;
+    }
+
     Object.seal(this);
 }

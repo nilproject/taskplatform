@@ -20,19 +20,9 @@
         var stepIndex = 0;
 
         function final() {
-            var prmsRegExp = /[?&]([^=]*)=([^&]*)/g;
+            var queryPrms = app.getQueryParams();
             var uid = VK.Auth.getSession().mid;
-            var hash = null;
-            for (; ;) {
-                var queryPrms = prmsRegExp.exec(window.location.href);
-                if (!queryPrms)
-                    break;
-
-                switch (queryPrms[1]) {
-                    case "uid": uid = queryPrms[2]; break;
-                    case "hash": hash = queryPrms[2]; break;
-                }
-            }
+            var hash = queryPrms.hash;
 
             var data = { uid: uid, hash: hash };
             Object.assign(data, tagedNodes.steps[0]._info);

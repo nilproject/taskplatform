@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS Users;
 CREATE TABLE Users (
     UserID INT8 NOT NULL AUTO_INCREMENT,
     VkUserID INT8 NOT NULL,
-    `Name` NVARCHAR(128) NOT NULL,
+    `Name` NVARCHAR(1024) NOT NULL,
     Role ENUM('Customer',
               'Executor',
               'System') NOT NULL,
