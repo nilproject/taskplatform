@@ -21,6 +21,4 @@ CREATE TABLE Transactions (
 create index IX_Transactions_SourceID on Transactions(SourceID);
 create index IX_Transactions_TargetID on Transactions(TargetID);
 
-INSERT INTO Transactions (Direction, SourceID, TargetID, Amount, Created)
-
 SELECT * FROM Transactions;

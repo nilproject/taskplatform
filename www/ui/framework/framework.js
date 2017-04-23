@@ -131,7 +131,7 @@ var fw = (function () {
                 callback && setTimeout(callback, 0);
             }
         }
-        
+
         if (cacheRecord.templateUri) {
             awaitersCount++;
             _load(cacheRecord.templateUri, function (result) {
