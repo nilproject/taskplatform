@@ -11,7 +11,11 @@
 
         var text = "";
         for (var property in params) {
-            text += property + ": " + params[property];
+            if (property === "created") {
+                text += property + ": " + new Date(params[property]);
+            } else {
+                text += property + ": " + params[property];
+            }
             text += "\n";
         }
 
