@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -17,8 +17,8 @@
             fw.lazyLoad = true;
             var app = new App();
             app.loadUserInfo(function (result) {
-                if (!result)
-                    fw.navigation.navigate("/login");
+                //if (!result)
+                //    fw.navigation.navigate("/login");
 
                 fw.bootstrap('app', app);
             });

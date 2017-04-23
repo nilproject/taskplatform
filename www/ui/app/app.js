@@ -14,6 +14,10 @@ fw.defineComponent(
         {
             name: "registration",
             uri: "../registration/registration.js"
+        },
+        {
+            name: "system-page",
+            uri: "../systempage/systempage.js"
         }
     ],
     function (app, element, childs, tagedNodes, params) {
