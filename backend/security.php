@@ -9,7 +9,7 @@ function checkAuthentication() {
 
     if ($hash !== makeAuthHash($userId)
         && $hash !== makeAuthHash($userId, true)) {
-        dieWithCode(401);
+        dieWithCode(403);
     }
 }
 
@@ -47,7 +47,7 @@ function checkVkAuthentication($userId, $hash) {
     $secKey = $_SERVER['SEC_KEY'];
 
     if ($hash !== hash("md5", $appid . $userId . $secKey)) {
-        dieWithCode(401);
+        dieWithCode(403);
     }
 }
 

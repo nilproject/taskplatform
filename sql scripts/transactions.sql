@@ -15,8 +15,7 @@ CREATE TABLE Transactions (
     TargetID INT8 NULL,
     Amount DECIMAL(16,4) NOT NULL,
     Created INT8,
-    PRIMARY KEY (TransactionID),
-    UNIQUE KEY (TargetID)
+    PRIMARY KEY (TransactionID)
 )   ENGINE = INNODB;
 
 create index IX_Transactions_SourceID on Transactions(SourceID);

@@ -114,9 +114,19 @@ function completeTask($taskid, $userId) {
                      WHERE TaskID = ?",
                      [
                          $userId,
-                         $taskid,
+                         $taskid
                      ],
                      'ii');
+}
+
+function getTaskReward($taskid) {
+    return db_query("SELECT reward
+                     FROM Tasks
+                     WHERE TaskID = ?",
+                     [
+                         $taskid
+                     ],
+                     'i');
 }
 
 function loadUsersForTasks($tasks) {

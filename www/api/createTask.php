@@ -14,23 +14,18 @@ $reward = $_POST["reward"];
 if (!is_numeric($reward))
     dieWithCode(400);
 
+$userId = intval($_COOKIE['userid']);
+
 checkAuthentication();
-updateUserAuthInfo($_COOKIE['userid']);
-checkRole($_COOKIE['userid'], ROLE_CUSTOMER);
+updateUserAuthInfo($userId);
+checkRole($userId, ROLE_CUSTOMER);
 
-$result = withdrawFunds($_COOKIE['userid'], $reward);
-
-if ($result === null)
-    dieWithCode(500);
-
-if (array_key_exists("error", $result)) {
-    echoJson($result["error"]);
-    dieWithCode(402);
-}
+$response = withdrawFunds($userId, $reward);
+checkResponse($response);
 
 try {
     $taskId = 0;
-    $result = createTask($_COOKIE['userid'], $_POST["description"], $reward, $taskId);
+    $result = createTask($userId, $_POST["description"], $reward, $taskId);
 
     if ($result === null || array_key_exists("error", $result)) {
         dieWithCode(500);
@@ -50,7 +45,7 @@ try {
         throw $e;
     }
 } catch (Exception $e) {
-    enrollFunds($_COOKIE['userid'], $reward);
+    enrollFunds(userId, $reward);
     throw $e;
 }
 
