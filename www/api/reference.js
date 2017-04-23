@@ -55,5 +55,15 @@ var api = {
             complete: callback,
             dataType: "json"
         });
+    },
+
+    enrollFunds: function (amount, callback) {
+        $.ajax({
+            url: "/api/enrollFunds.php",
+            method: "POST",
+            data: "amount=" + escape(amount),
+            complete: callback,
+            dataType: "json"
+        });
     }
 };

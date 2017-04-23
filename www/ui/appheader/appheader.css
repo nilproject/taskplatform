@@ -115,22 +115,22 @@
             background: #f0f2f5;
         }
 
-    app-header .new-task-layer {
+    app-header .dialog-layer {
         left: 50%;
         top: 0;
     }
 
-        app-header .new-task-layer .new-task-layer-content {
+        app-header .dialog-layer .dialog-layer-content {
             margin-left: 50%;
             line-height: inherit;
         }
 
-        app-header .new-task-layer .new-task-btn {
+        app-header .dialog-layer .dialog-btn {
             margin-left: 20px;
             vertical-align: middle;
         }
 
-        app-header .new-task-layer new-task-dialog {
+        app-header .dialog-layer .dialog {
             position: relative;
             left: -200%;
             margin-top: 15px;

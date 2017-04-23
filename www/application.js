@@ -117,6 +117,7 @@ function App() {
                 self.user.name = decodeHtml(self.user.name);
 
                 self.user.allowCreateTasks = self.user.role === "Customer";
+                self.user.allowEnrollFunds = self.user.role === "Customer";
                 self.user.allowExecuteTasks = self.user.role === "Executor";
                 self.user.isSystem = self.user.role === "System";
 

@@ -1,0 +1,31 @@
+﻿enroll-dialog {
+    display: block;
+    height: 100px;
+    background: white;
+    border-radius: 2px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8, 0 0 25px #7a7a7a;
+}
+
+    enroll-dialog div {
+        height: auto;
+    }
+
+    enroll-dialog > div {
+        padding: 15px;
+    }
+
+    enroll-dialog .main {
+        height: 100%;
+    }
+
+    enroll-dialog .footer {
+        text-align: right;
+    }
+
+    enroll-dialog .footer {
+        white-space: nowrap;
+    }
+
+    enroll-dialog .invalid {
+        outline: 1px solid #f77;
+    }

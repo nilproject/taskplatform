@@ -6,6 +6,10 @@
         {
             name: "new-task-dialog",
             uri: "../newtaskdialog/newtaskdialog.js"
+        },
+        {
+            name: "enroll-dialog",
+            uri: "../enrolldialog/enrolldialog.js"
         }
     ],
     function (app, element, childs, tagedNodes, params) {
@@ -38,6 +42,14 @@
             }
         } else {
             tagedNodes.newTask[0].parentNode.removeChild(tagedNodes.newTask[0]);
+        }
+
+        if (app.user.allowEnrollFunds) {
+            tagedNodes.enroll[0].onclick = function () {
+                tagedNodes.enrollDialog[0]._open();
+            }
+        } else {
+            tagedNodes.enroll[0].parentNode.removeChild(tagedNodes.enroll[0]);
         }
     }
 );

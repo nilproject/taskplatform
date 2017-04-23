@@ -7,6 +7,9 @@
                 <li>
                     Счёт: <span fw-tag="money"></span>
                 </li>
+                <li fw-tag="enroll">
+                    Пополнить счёт
+                </li>
                 <li onclick="window.location.href='/logout.php'">
                     Выйти
                 </li>
@@ -15,10 +18,11 @@
     </div>
 </div>
 
-<div class="new-task-layer layer content-width">
-    <div class="new-task-layer-content">
+<div class="dialog-layer layer content-width">
+    <div class="dialog-layer-content">
         <button fw-tag="newTask" class="new-task-btn">Создать задачу</button>
-        <new-task-dialog fw-tag="newTaskDialog" class="content-width hidden"></new-task-dialog>
+        <new-task-dialog fw-tag="newTaskDialog" class="content-width dialog hidden"></new-task-dialog>
+        <enroll-dialog fw-tag="enrollDialog" class="dialog hidden"></enroll-dialog>
     </div>
 </div>
 

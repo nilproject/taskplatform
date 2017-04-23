@@ -10,12 +10,15 @@
 
         tagedNodes.submit[0].onclick = function () {
             var valid = true;
-            if (tagedNodes.reward[0].value.length === 0 || isNaN(Number(tagedNodes.reward[0].value))) {
+            if (tagedNodes.reward[0].value.length === 0
+                || isNaN(Number(tagedNodes.reward[0].value))
+                || tagedNodes.reward[0].value.length >= 7) {
                 $(tagedNodes.reward[0]).addClass("invalid");
                 valid = false;
             }
 
-            if (tagedNodes.text[0].value.length === 0 || tagedNodes.text[0].value.length > 4096) {
+            if (tagedNodes.text[0].value.length === 0
+                || tagedNodes.text[0].value.length > 4096) {
                 $(tagedNodes.text[0]).addClass("invalid");
                 valid = false;
             }
@@ -30,6 +33,8 @@
                     close();
                 } else if (response.status == 402) {
                     $(tagedNodes.reward[0]).addClass("invalid");
+                } else {
+                    $(element).addClass("invalid");
                 }
             });
         }
