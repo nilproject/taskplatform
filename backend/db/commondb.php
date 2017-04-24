@@ -1,6 +1,6 @@
 <?php
 
-function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;", &$insertedIds = null) {
+function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;", &$insertedIds = null, &$affectedRowsCount = null) {
 	$db = mysqli_connect($_SERVER["DB_HOST"], $_SERVER["DB_LOGIN"], $_SERVER["DB_PASS"], $_SERVER["DB_NAME"])
 			        or die('dberror: ' . mysql_error());
 	
@@ -50,6 +50,10 @@ function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;", &$ins
 				return array("error" => $errorMessage);
 			}
 			
+			if ($affectedRowsCount !== null) {
+				$affectedRowsCount += mysqli_affected_rows($db);
+			}
+
 			$queryResult = mysqli_stmt_get_result($preparedQuery);
 			
 			if (!is_bool($queryResult)) {

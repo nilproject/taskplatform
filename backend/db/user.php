@@ -75,19 +75,27 @@ function createUser($vkUserId, $role, $name, $isAdmin, &$userId) {
     return $result;
 }
 
-function withdrawFunds($userId, $amount) {
+function tryWithdrawFunds($userId, $amount) {
     if (!is_numeric($amount) || doubleval($amount) < 0) {
         die("Incorrect amount");
     }
 
-    return db_query('UPDATE Users 
+    $insertdRows = null;
+    $affectedRowsCount = 0;
+    $response = db_query('UPDATE Users 
                      SET Cash = Cash - ? 
-                     WHERE UserID = ?',
+                     WHERE UserID = ? AND Cash >= ?',
                      [
                          $amount,
-                         $userId
+                         $userId,
+                         $amount
                      ],
-                     'si');
+                     'sis',
+                     'GO;',
+                     $insertdRows,
+                     $affectedRowsCount);
+    checkResponse($response);
+    return $affectedRowsCount !== 0;
 }
 
 function enrollFunds($userId, $amount) {

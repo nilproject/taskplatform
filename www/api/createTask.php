@@ -20,8 +20,9 @@ checkAuthentication();
 updateUserAuthInfo($userId);
 checkRole($userId, ROLE_CUSTOMER);
 
-$response = withdrawFunds($userId, $reward);
-checkResponse($response, 402);
+$moneyChanged = tryWithdrawFunds($userId, $reward);
+if (!$moneyChanged)
+    dieWithCode(402);
 
 try {
     $taskId = 0;
