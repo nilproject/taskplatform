@@ -19,10 +19,6 @@ if (!isAdmin($_COOKIE['userid'])) {
     dieWithCode(403);
 }
 
-$timestamp = intval($_GET["time"]);
-if ($timestamp === 0)
-    $timestamp = PHP_INT_MAX;
-
 $limit = intval($_GET["limit"]);
 if ($limit === 0)
     $limit = 25;
