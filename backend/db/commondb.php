@@ -23,16 +23,16 @@ function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;", &$ins
 			
 			$localTypes = "";
 			$prms = [ &$preparedQuery, &$localTypes ];
-			if ($params) {
+			if ($params && $prmsCount > 0) {
 				$cvtPrms = [];
 				for (; $prmsCount --> 0; $paramsIndex++) {
 					$cvtPrms[] = $params[$paramsIndex];
 					$localTypes .= $types[$paramsIndex];
 					$prms[] = &$cvtPrms[count($cvtPrms) - 1];
 				}
-			}
 
-			call_user_func_array("mysqli_stmt_bind_param", $prms);
+				call_user_func_array("mysqli_stmt_bind_param", $prms);
+			}
 			
 			$success = mysqli_stmt_execute($preparedQuery);
 
