@@ -3,13 +3,41 @@
 include_once "commondb.php";
 
 function getTransactions($limit, $timestamp, $compareDirection) {
-    $query = "CALL getTransactions(?, ?, ?); 
+    $query = "SET @timestamp = ?; GO;
+              SET @compareDirection = ?; GO;
+
+              CREATE TEMPORARY TABLE tmp_temp
+              SELECT * 
+              FROM Transactions 
+              WHERE (@compareDirection = 0 AND (Created < @timestamp))
+                 || (@compareDirection != 0 AND (Created > @timestamp))
+              ORDER BY Created DESC 
+              LIMIT ?;
               GO;
-              SELECT transactionID, direction, sourceID, targetID, amount, created FROM rslt_getTransactions";
+
+              SET @created = (SELECT MIN(Created) FROM tmp_temp);
+              GO;
+
+              CREATE TEMPORARY TABLE tmp_temp2 
+              SELECT *
+              FROM Transactions 
+              WHERE Created = @created;
+              GO;
+
+              CREATE TEMPORARY TABLE tmp_result
+              SELECT *
+              FROM tmp_temp
+              WHERE created != @created 
+              UNION ALL 
+              SELECT *
+              FROM tmp_temp2;
+              GO;
+            
+              SELECT transactionID, direction, sourceID, targetID, amount, created FROM tmp_result";
  
     return db_query(
             $query, 
-            [ $timestamp, $limit, $compareDirection ],
+            [ $timestamp, $compareDirection, $limit ],
             'iii');
 }
 
