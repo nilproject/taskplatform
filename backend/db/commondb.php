@@ -21,7 +21,6 @@ function db_query($multiquery, $params, $types, $queriesDelimiter = "GO;", &$ins
 				return ["error" => "Invalid request"];
 			}
 			
-
 			$localTypes = "";
 			$prms = [ &$preparedQuery, &$localTypes ];
 			if ($params) {

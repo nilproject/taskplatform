@@ -18,8 +18,10 @@ checkRole($_COOKIE['userid'], ROLE_EXECUTOR);
 $userId = intval($_COOKIE['userid']);
 $taskId = intval($_GET['taskid']);
 
-$response = completeTask($taskId, $userId);
-checkResponse($response);
+$taskCompleted = tryCompleteTask($taskId, $userId);
+if (!$taskCompleted) {
+    dieWithCode(409);
+}
 
 $resward = null;
 

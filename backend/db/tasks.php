@@ -128,15 +128,22 @@ function deleteTask($taskId) {
                     'idsi');
 }
 
-function completeTask($taskid, $userId) {
-    return db_query("UPDATE Tasks
+function tryCompleteTask($taskid, $userId) {
+    $insertedRows = null;
+    $affectedRowsCount = 0;
+    $response = db_query("UPDATE Tasks
                      SET ExecutorID = ?, Status = 'Done'
-                     WHERE TaskID = ?",
+                     WHERE TaskID = ? AND ExecutorID IS NULL AND Status = 'ToDo'",
                      [
                          $userId,
                          $taskid
                      ],
-                     'ii');
+                     'ii',
+                     'GO;',
+                     $insertedRows,
+                     $affectedRowsCount);
+    checkResponse($response);
+    return $affectedRowsCount !== 0;
 }
 
 function getTaskReward($taskid) {

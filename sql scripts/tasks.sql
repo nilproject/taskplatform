@@ -18,14 +18,3 @@ CREATE TABLE Tasks (
 create index IX_Tasks_CreatorID on Tasks(CreatorID);
 create index IX_Tasks_ExecutorID on Tasks(ExecutorID);
 create index IX_Tasks_Created on Tasks(Created);
-
-DELIMITER //
-CREATE TRIGGER TR_ExecutorOverrideCheck BEFORE UPDATE ON Tasks
-FOR EACH ROW
-BEGIN
-	IF OLD.ExecutorID IS NOT NULL AND NEW.ExecutorID != OLD.ExecutorID THEN
-		SET @msg = 'Error: Excecutor is already assigned';
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
-	END IF;
-END
-//
