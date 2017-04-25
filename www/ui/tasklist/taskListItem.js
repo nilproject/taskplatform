@@ -15,7 +15,7 @@
             });
         }
 
-        if (params.status === "Done") {
+        if (params.status !== "Done") {
             $(tagedNodes.compLabel[0]).remove();
         }
 

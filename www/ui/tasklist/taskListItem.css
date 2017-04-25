@@ -46,5 +46,5 @@
 
     task-list-item .completed-label {
         cursor: default;
-        display: none;
+        display: inline-block;
     }
