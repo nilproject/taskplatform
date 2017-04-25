@@ -31,6 +31,14 @@ if ($limit === 0)
 $tasks = getTasks($taskType, intval($_COOKIE["userid"]), $limit, $timestamp, DIRECTION_OLD);
 checkResponse($tasks);
 
-$users = loadUsersForTasks($tasks);
+$usersIds = getUserIdsForTasks($tasks);
+
+$users = [];
+if (count($usersIds)) {
+    $tempUsers = getUsers($usersIds);
+    foreach ($tempUsers as $user) {
+        $users[$user["userId"]] = $user;
+    }
+}
 
 echoJson([ "tasks" => $tasks, "users" => $users ]);

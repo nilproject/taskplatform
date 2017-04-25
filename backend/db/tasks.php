@@ -4,46 +4,17 @@ include_once "commondb.php";
 include_once "constants.php";
 
 function getTasks($taskType, $userId, $limit, $timestamp, $compareDirection) {
-    $queryPrefix = "SET @timestamp = ?; GO;
-                    SET @compareDirection = ?; GO;
-
-                    CREATE TEMPORARY TABLE tmp_temp
-                    SELECT * 
-                    FROM Tasks 
-                    WHERE (@compareDirection = 0 AND (Created < @timestamp))
-                       || (@compareDirection != 0 AND (Created > @timestamp))
-                    ORDER BY Created DESC 
-                    LIMIT ?;
-                    GO;
-                    
-                    SET @created = (SELECT MIN(Created) FROM tmp_temp);
-                    GO;
-
-                    CREATE TEMPORARY TABLE tmp_temp2 
-                    SELECT *
-                    FROM Tasks 
-                    WHERE Created = @created;
-                    GO;
-
-                    CREATE TEMPORARY TABLE tmp_result
-                    SELECT *
-                    FROM tmp_temp
-                    WHERE created != @created 
-                    UNION ALL 
-                    SELECT *
-                    FROM tmp_temp2;
-                    GO;
-                    
-                    SELECT taskId, creatorId, executorId, reward, description, status, created 
-                    FROM tmp_result";
-    $condition   = "";
-    
+    $prms = [];
+    $types = "";
+    $select = "SELECT taskId, creatorId, executorId, reward, description, status, created FROM Tasks";
+    $timeComparision = $compareDirection === 0 ? "(Created < ?)" : "(Created > ?)";
+    $condition   = "";    
     switch ($taskType) {
         case GETTASK_CREATEDBYUSER: {
-            return db_query(
-                $queryPrefix . " WHERE CreatorID = ? ", 
-                [ $timestamp, $compareDirection, $limit, $userId ],
-                'iiii');    
+            $prms[] = $userId;
+            $types .= "i";
+            $condition = " WHERE (CreatorID = ?)";
+            break;
         }
 
         case GETTASK_ALL: {
@@ -52,51 +23,72 @@ function getTasks($taskType, $userId, $limit, $timestamp, $compareDirection) {
         }
 
         case GETTASK_UNCOMPLETED: {
-            $condition = " WHERE Status != 'Done' ";
+            $condition = " WHERE Status != 'Done'";
             break;
         }
 
         case GETTASK_COMPLETED: {
-            $condition = " WHERE Status = 'Done' ";
+            $condition = " WHERE Status = 'Done'";
             break;
         }
 
         case GETTASK_ASSIGNEDTOUSER: {
-            $condition = " WHERE ExecutorID = ? ";
-            return db_query(
-                $queryPrefix . $condition, 
-                [ $timestamp, $compareDirection, $limit, $userId ],
-                'iiii');
+            $prms[] = $userId;
+            $types .= "i";
+            $condition = " WHERE ExecutorID = ?";
+            break;
         }
 
         case GETTASK_COMPLETEDBYUSER: {
-            $condition = " WHERE ExecutorID = ? AND Status = 'Done' ";
-            return db_query(
-                $queryPrefix . $condition, 
-                [ $timestamp, $compareDirection, $limit, $userId ],
-                'iiii');
+            $prms[] = $userId;
+            $types .= "i";
+            $condition = " WHERE ExecutorID = ? AND Status = 'Done'";
+            break;
         }
 
         case GETTASK_UNCOMPLETEDBYUSER: {
-            $condition = " WHERE ExecutorID = ? AND Status != 'Done' ";
-            return db_query(
-                $queryPrefix . $condition, 
-                [ $timestamp, $compareDirection, $limit, $userId ],
-                'iiii');
+            $prms[] = $userId;
+            $types .= "i";
+            $condition = " WHERE ExecutorID = ? AND Status != 'Done'";
+            break;
         }
 
         default: return null;
     }
 
-    $suffix = "";
+    $order = "";
     if ($compareDirection === DIRECTION_NEW) {
-        $suffix = "ORDER BY created ASC";
+        $order = " ORDER BY created ASC";
+    } else {
+        $order = " ORDER BY Created DESC";
+    }
+    
+    $prms[] = $timestamp;
+    $types .= "i";
+    $prms[] = $limit;
+    $types .= 'i';
+
+    $query = $select . $condition . " AND " . $timeComparision . $order . " LIMIT ?";
+
+    $link = db_connect();
+    $result = db_connectedQuery($link, $query, $prms, $types);
+    $resultSize = count($result);
+    if ($resultSize > 0 && $resultSize === $limit) {
+        $minTime = $result[$resultSize - 1]["created"];
+        $prms[count($prms) - 2] = $minTime;
+        $addResult = db_connectedQuery($link, $select . $condition . " AND (Created = ?)", $prms, $types);
+
+        $removeCount = 1;
+        while ($removeCount < $resultSize && $result[$resultSize - $removeCount]["created"] === $minTime) {
+            $removeCount++;
+        }
+
+        array_splice($result, $resultSize - $removeCount, $removeCount);
+        $result = array_merge($result, $addResult);
     }
 
-    return db_query(
-        $queryPrefix . $condition . $suffix, 
-        [ $timestamp, $compareDirection, $limit ],
-        'iii');
+    db_close($link);
+    return $result;
 }
 
 function createTask($creatorId, $description, $reward, &$taskId) {
@@ -156,7 +148,7 @@ function getTaskReward($taskid) {
                      'i');
 }
 
-function loadUsersForTasks($tasks) {
+function getUserIdsForTasks($tasks) {
     $users = [];
     foreach ($tasks as $task) {
         $users[$task["creatorId"]] = '';
@@ -164,13 +156,5 @@ function loadUsersForTasks($tasks) {
             $users[$task["executorId"]] = '';
     }
 
-    if (count($users)) {
-        $tempUsers = getUsers(array_keys($users));
-        $users = [];
-        foreach ($tempUsers as $user) {
-            $users[$user["userId"]] = $user;
-        }
-    }
-
-    return $users;
+    return array_keys($users);
 }
