@@ -3,42 +3,44 @@
 include_once "commondb.php";
 
 function getTransactions($limit, $timestamp, $compareDirection) {
-    $query = "SET @timestamp = ?; GO;
-              SET @compareDirection = ?; GO;
+    $prms = [];
+    $types = "";
+    $select = "SELECT transactionID, direction, sourceID, targetID, amount, created FROM Transactions";
+    $timeComparision = $compareDirection === 0 ? "(Created < ?)" : "(Created > ?)";
 
-              CREATE TEMPORARY TABLE tmp_temp
-              SELECT * 
-              FROM Transactions 
-              WHERE (@compareDirection = 0 AND (Created < @timestamp))
-                 || (@compareDirection != 0 AND (Created > @timestamp))
-              ORDER BY Created DESC 
-              LIMIT ?;
-              GO;
+    $order = "";
+    if ($compareDirection === DIRECTION_NEW) {
+        $order = " ORDER BY created ASC";
+    } else {
+        $order = " ORDER BY Created DESC";
+    }
+    
+    $prms[] = $timestamp;
+    $types .= "i";
+    $prms[] = $limit;
+    $types .= 'i';
 
-              SET @created = (SELECT MIN(Created) FROM tmp_temp);
-              GO;
+    $query = $select . " WHERE " . $timeComparision . $order . " LIMIT ?";
 
-              CREATE TEMPORARY TABLE tmp_temp2 
-              SELECT *
-              FROM Transactions 
-              WHERE Created = @created;
-              GO;
+    $link = db_connect();
+    $result = db_connectedQuery($link, $query, $prms, $types);
+    $resultSize = count($result);
+    if ($resultSize > 0 && $resultSize === $limit) {
+        $minTime = $result[$resultSize - 1]["created"];
+        $prms[count($prms) - 2] = $minTime;
+        $addResult = db_connectedQuery($link, $select . " WHERE (Created = ?)", $prms, $types);
 
-              CREATE TEMPORARY TABLE tmp_result
-              SELECT *
-              FROM tmp_temp
-              WHERE created != @created 
-              UNION ALL 
-              SELECT *
-              FROM tmp_temp2;
-              GO;
-            
-              SELECT transactionID, direction, sourceID, targetID, amount, created FROM tmp_result";
- 
-    return db_query(
-            $query, 
-            [ $timestamp, $compareDirection, $limit ],
-            'iii');
+        $removeCount = 1;
+        while ($removeCount < $resultSize && $result[$resultSize - $removeCount]["created"] === $minTime) {
+            $removeCount++;
+        }
+
+        array_splice($result, $resultSize - $removeCount, $removeCount);
+        $result = array_merge($result, $addResult);
+    }
+
+    db_close($link);
+    return $result;
 }
 
 function createTransaction($direction, $sourceId, $targetId, $amount, $part = 1.0) {
