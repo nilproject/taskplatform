@@ -45,9 +45,6 @@
     }    
 
     task-list-item .completed-label {
+        cursor: default;
         display: none;
-    }
-
-    task-list-item.completed .completed-label {
-        display: inline-block;
     }

@@ -16,7 +16,7 @@
         }
 
         if (params.status === "Done") {
-            $(element).addClass("completed");
+            $(tagedNodes.compLabel[0]).remove();
         }
 
         if (app.user.allowExecuteTasks
@@ -31,7 +31,7 @@
                 });
             }
         } else {
-            tagedNodes.doButton[0].parentNode.removeChild(tagedNodes.doButton[0]);
+            $(tagedNodes.doButton[0]).remove();
         }
     }
 )

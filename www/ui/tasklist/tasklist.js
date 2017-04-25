@@ -17,8 +17,15 @@ fw.defineComponent(
         var updateInterval = setInterval(loadNewTasks, 12500);
         app.on(app.events.newtask, loadNewTasks, element);
 
+        var suppressLoadNewTasks = false;
         function loadNewTasks() {
+            if (suppressLoadNewTasks) {
+                return;
+            }
+            suppressLoadNewTasks = true;
+
             api.getNewerTasks(params.taskStatus, newestTimestamp || 0, 25, function (response) {
+                suppressLoadNewTasks = false;
                 if (response.status === 200) {
                     var data = response.responseJSON;
                     for (var i = 0, len = data.tasks.length; i < len; i++) {

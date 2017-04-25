@@ -66,6 +66,8 @@
                     return;
                 }
 
+                $(tagedNodes.nextBtn[0]).removeAttr("disabled");
+
                 $(tagedNodes.steps[stepIndex]).removeClass("current");
                 $(tagedNodes.steps[stepIndex]).addClass("visited");
                 stepIndex++;
@@ -84,6 +86,8 @@
         function goToPrev() {
             if (stepIndex <= 0)
                 return;
+
+            $(tagedNodes.nextBtn[0]).removeAttr("disabled");
 
             $(tagedNodes.steps[stepIndex]).removeClass("current");
             stepIndex--;
