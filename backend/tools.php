@@ -10,7 +10,7 @@ function dieWithCode($code) {
         case 403: $codeDescription .= ' Forbidden'; break;
         case 404: $codeDescription .= ' Not Found'; break;
         case 409: $codeDescription .= ' Conflict'; break;
-        case 500: $codeDescription .= ' Internal Rrror'; break;
+        case 500: $codeDescription .= ' Internal Error'; break;
     }
 
     header('HTTP/1.1 ' . $codeDescription, true, $code); die($code);
